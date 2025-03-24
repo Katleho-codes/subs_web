@@ -1,10 +1,10 @@
 import CreateSubscriptionScreen from '@/components/screens/CreateSubscription/page'
 import React from 'react'
 
-const Home = () => {
+const CreateSubscription = () => {
     return (
         <CreateSubscriptionScreen />
     )
 }
 
-export default Home
+export default CreateSubscription
