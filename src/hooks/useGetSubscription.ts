@@ -30,7 +30,7 @@ const useGetSubscription = (userId?: string) => {
             }));
             if (data) setSubs(data); // ✅ Store in state
         } catch (error: any) {
-            // console.error("get sub error", error?.message);
+            console.error("get sub error", error?.message);
             // Alert.alert(error?.message);
         } finally {
             setSubsLoading(false); // End loading
@@ -38,6 +38,7 @@ const useGetSubscription = (userId?: string) => {
     };
     useEffect(() => {
         getData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     // todo: uncomment
     // }, [userId]);

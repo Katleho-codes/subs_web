@@ -4,17 +4,17 @@ import { useState } from "react";
 import { useAuth } from "./useAuth";
 
 type TUpdateSubscription = {
-    subName: string;
+    sub_name: string;
     category: string;
-    planName?: string;
-    billingCycle?: string;
-    startDate?: string;
+    plan_name?: string;
+    billing_cycle?: string;
+    start_date?: string;
     trial_start_date?: string;
-    nextBillingDate?: string;
+    next_billing_date?: string;
     trial_end_date?: string;
     amount: string | number;
     currency: string;
-    autoRenew?: boolean;
+    auto_renew?: boolean;
     created_at: string;
 };
 

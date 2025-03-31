@@ -3,60 +3,67 @@ import { useState } from "react";
 import useGetSubscriptions from "./useGetSubscriptions";
 import { toast } from "sonner";
 import { db } from "@/lib/firebase";
+import { useAuth } from "./useAuth";
 type TAddSub = {
-    subName: string;
+    sub_name: string;
     category: string;
-    planName?: string;
-    billingCycle?: string;
-    startDate?: Date;
-    is_trial?:boolean;
+    plan_name?: string;
+    billing_cycle?: string;
+    start_date?: Date;
+    is_trial?: boolean;
     trial_start_date?: Date;
-    nextBillingDate?: Date;
+    next_billing_date?: Date;
     trial_end_date?: Date;
     amount: string | number;
     currency: string;
-    autoRenew?: boolean;
+    auto_renew?: boolean;
     created_at: string;
-    userId: string;
+    // userId: string | undefined;
 };
 
 const useAddSubscription = () => {
     const [addSubLoading, setLoading] = useState(false); // Loading state
     const { getData } = useGetSubscriptions();
+    const { user, loading, googleLogin, logout } = useAuth();
     const addSub = async (values: TAddSub) => {
+        if (!user) return;
         setLoading(true);
         try {
-            // check if exists
             const q = query(
                 collection(db, "subscriptions"),
-                where("sub_name", "==", values?.subName)
+                // where("sub_name", "==", values?.sub_name),
+                where("userId", "==", user?.uid) // ✅ Only check for current user's subscriptions
             );
 
             const querySnapshot = await getDocs(q);
+            console.log(
+                "Query Snapshot:",
+                querySnapshot.docs.map((doc) => doc.data())
+            ); // ✅ Log results
+
             if (!querySnapshot.empty) {
+                console.log("Subscription exists, stopping execution."); // ✅ Log condition
                 toast.error("Subscription exists!");
-                // console.error("Subscription name already exists!");
+                setLoading(false);
                 return;
             }
 
+            // Remove undefined values
+            const filteredValues = Object.fromEntries(
+                Object.entries(values).filter(([_, v]) => v !== undefined)
+            );
+            console.log("filteredValues", filteredValues);
+            console.log("userId", user?.uid);
             const docRef = await addDoc(collection(db, "subscriptions"), {
-                sub_name: values?.subName,
-                categories: values?.category,
-                plan_name: values?.planName,
-                billing_cycle: values?.billingCycle,
-                start_date: values?.startDate,
-                next_billing_date: values?.nextBillingDate,
-                total_amount: values?.amount,
-                currency: values?.currency,
-                auto_renew: values?.autoRenew,
-                created_at: values?.created_at,
-                // we will use this after setting up the auth
-                // user_id: userId
+                ...filteredValues, // Use only valid values
+                userId: user?.uid, // Ensure userId is always set
             });
-            getData();
-            toast.success("Subscription created!");
+            // console.log("docRef", docRef);
+            // // getData();
+            // toast.success("Subscription created!");
         } catch (error: any) {
-            toast.error("Subscription not created");
+            console.log("create sub error", error);
+            // toast.error("Subscription not created");
         } finally {
             setLoading(false); // Stop loading
         }

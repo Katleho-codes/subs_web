@@ -76,7 +76,7 @@ async function sendNotification(sub: TGetubs, message: string) {
             title: "Subscription Reminder",
             body: message,
             data: {
-                subName: sub?.sub_name,
+                sub_name: sub?.sub_name,
                 subId: sub.id,
                 categories: sub?.categories,
                 plan_name: sub?.plan_name,

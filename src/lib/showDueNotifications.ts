@@ -13,7 +13,7 @@ async function showNotificationIfLessThanFiveDays(subs: TGetubs[]) {
         );
         for (const sub of subs) {
             // console.log(sub)
-            let nextBillingDate:
+            let next_billing_date:
                 | Moment
                 | number
                 | string
@@ -24,7 +24,7 @@ async function showNotificationIfLessThanFiveDays(subs: TGetubs[]) {
             // Calculate days until next billing date
             const daysUntilNextBilling = calculateDaysBetweenDates(
                 currentDate,
-                nextBillingDate
+                next_billing_date
             );
 
             // Prevent duplicate notifications on the same day
@@ -63,14 +63,14 @@ async function showNotificationIfLessThanFiveDays(subs: TGetubs[]) {
             // Handle auto-renew
             if (sub?.auto_renew) {
                 if (sub?.billing_cycle === "monthly") {
-                    nextBillingDate.add(1, "month");
+                    next_billing_date.add(1, "month");
                 } else if (sub?.billing_cycle === "weekly") {
-                    nextBillingDate.add(1, "week");
+                    next_billing_date.add(1, "week");
                 } else if (sub?.billing_cycle === "yearly") {
-                    nextBillingDate.add(1, "year");
+                    next_billing_date.add(1, "year");
                 }
                 // Save updated next billing date
-                sub.next_billing_date = nextBillingDate.format("YYYY-MM-DD");
+                sub.next_billing_date = next_billing_date.format("YYYY-MM-DD");
             }
         }
     } catch (error) {
@@ -88,7 +88,7 @@ async function sendNotification(sub: TGetubs, message: string) {
             title: "Subscription Reminder",
             body: message,
             data: {
-                subName: sub?.sub_name,
+                sub_name: sub?.sub_name,
                 subId: sub.id,
                 categories: sub?.categories,
                 plan_name: sub?.plan_name,
