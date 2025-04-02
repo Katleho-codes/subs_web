@@ -2,6 +2,7 @@ import { db } from "@/lib/firebase";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { useState } from "react";
 import { useAuth } from "./useAuth";
+import { toast } from "sonner";
 
 type TUpdateSubscription = {
     sub_name: string;
@@ -34,6 +35,7 @@ const useUpdateSubscription = () => {
 
             // Step 1: Fetch the current document
             const docSnapshot = await getDoc(docRef);
+            console.log("docSnapshot", docSnapshot);
 
             if (!docSnapshot.exists()) {
                 console.error("Document not found!");
@@ -49,14 +51,16 @@ const useUpdateSubscription = () => {
                     updatedFields[key] = values[key];
                 }
             }
-
+            // Remove undefined values
+            const filteredValues = Object.fromEntries(
+                Object.entries(updatedFields).filter(
+                    ([_, v]) => v !== undefined
+                )
+            );
             // Step 3: Update if there are any changes
-            if (Object.keys(updatedFields).length > 0) {
-                await updateDoc(docRef, updatedFields);
-                console.log(
-                    "Document updated successfully with fields:",
-                    updatedFields
-                );
+            if (Object.keys(filteredValues).length > 0) {
+                await updateDoc(docRef, filteredValues);
+                toast.success("Subscription updated!");
             } else {
                 console.log("No changes detected. No update made.");
             }

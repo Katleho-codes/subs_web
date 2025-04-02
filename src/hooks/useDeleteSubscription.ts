@@ -1,30 +1,37 @@
-import { useState } from "react";
-
-import { deleteDoc, doc } from "firebase/firestore";
-
 import { db } from "@/lib/firebase";
-import { toast } from "sonner";
-import useGetSubscriptions from "./useGetSubscriptions";
+import { doc, deleteDoc } from "firebase/firestore";
+import { useState } from "react";
 import { useAuth } from "./useAuth";
+import { toast } from "sonner";
+
 const useDeleteSubscription = () => {
-    const [deleteSubLoading, setLoading] = useState(false); // Loading state
-    const { getData } = useGetSubscriptions();
+    const [deleteSubscriptionLoading, setLoading] = useState(false);
     const { user } = useAuth();
-    const deleteSub = async (subId: string | string[]) => {
-        if (!subId || !user) return;
-        setLoading(true);
+
+    const deleteSubscription = async (
+        collectionName: string,
+        rowId: string
+    ) => {
+        if (!rowId || !user) return;
         try {
-            await deleteDoc(doc(db, "subscriptions", `${subId}`));
-            toast.success("Successfully deleted");
-            getData();
+            setLoading(true);
+
+            // Reference to the document
+            const docRef = doc(db, collectionName, rowId);
+
+            // Delete the document
+            await deleteDoc(docRef);
+
+            toast.success("Subscription deleted!");
         } catch (error: any) {
-            console.error("Error deleting subscriptions:", error?.message);
+            console.error("Error deleting document:", error);
+            toast.error("Failed to delete subscription.");
         } finally {
-            setLoading(false); // Stop loading
+            setLoading(false);
         }
     };
 
-    return { deleteSub, deleteSubLoading };
+    return { deleteSubscription, deleteSubscriptionLoading };
 };
 
 export default useDeleteSubscription;

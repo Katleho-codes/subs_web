@@ -53,14 +53,13 @@ const useAddSubscription = () => {
                 Object.entries(values).filter(([_, v]) => v !== undefined)
             );
             console.log("filteredValues", filteredValues);
-            console.log("userId", user?.uid);
             const docRef = await addDoc(collection(db, "subscriptions"), {
                 ...filteredValues, // Use only valid values
                 userId: user?.uid, // Ensure userId is always set
             });
             // console.log("docRef", docRef);
-            // // getData();
-            // toast.success("Subscription created!");
+            // getData();
+            toast.success("Subscription created!");
         } catch (error: any) {
             console.log("create sub error", error);
             // toast.error("Subscription not created");
