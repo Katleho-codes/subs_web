@@ -1,7 +1,6 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as Notifications from "expo-notifications";
-import moment, { Moment } from "moment";
-import calculateDaysBetweenDates from "./calculate_dates_difference";
+import { Timestamp } from "firebase/firestore";
+import moment from "moment";
+import calculateDaysBetweenDates from "./date_difference";
 import { datetimestamp } from "./datetime";
 import { TGetubs } from "./types";
 
@@ -9,17 +8,16 @@ async function showNotificationIfLessThanFiveDays(subs: TGetubs[]) {
     try {
         const currentDate = datetimestamp;
         const sentNotifications = JSON.parse(
-            (await AsyncStorage.getItem("sentNotifications")) || "{}"
+            localStorage.getItem("sentNotifications") || "{}"
         );
         for (const sub of subs) {
             // console.log(sub)
-            let next_billing_date:
-                | Moment
-                | number
-                | string
-                | null
-                | undefined
-                | any = moment(sub?.next_billing_date);
+            // const next_billing_date = moment(sub?.next_billing_date);
+            // Example of setting next_billing_date to a Firebase Timestamp
+            const next_billing_date = moment(sub?.next_billing_date); // Assuming sub.next_billing_date is a moment object
+            const firebaseTimestamp = Timestamp.fromDate(
+                next_billing_date?.toDate()
+            ); // Convert to Firebase Timestamp
 
             // Calculate days until next billing date
             const daysUntilNextBilling = calculateDaysBetweenDates(
@@ -30,7 +28,7 @@ async function showNotificationIfLessThanFiveDays(subs: TGetubs[]) {
             // Prevent duplicate notifications on the same day
             const today = moment(currentDate).format("YYYY-MM-DD");
             if (sentNotifications[sub?.sub_name] === today) {
-                continue;
+                continue; // Skip if the notification for today has already been sent
             }
 
             let message = null;
@@ -45,19 +43,10 @@ async function showNotificationIfLessThanFiveDays(subs: TGetubs[]) {
             if (message) {
                 await sendNotification(sub, message);
                 sentNotifications[sub?.sub_name] = today;
-                await AsyncStorage.setItem(
+                localStorage.setItem(
                     "sentNotifications",
                     JSON.stringify(sentNotifications)
-                );
-            }
-
-            if (message) {
-                await sendNotification(sub, message);
-                sentNotifications[sub.sub_name] = today;
-                await AsyncStorage.setItem(
-                    "sentNotifications",
-                    JSON.stringify(sentNotifications)
-                );
+                ); // Save the sent notification
             }
 
             // Handle auto-renew
@@ -70,7 +59,7 @@ async function showNotificationIfLessThanFiveDays(subs: TGetubs[]) {
                     next_billing_date.add(1, "year");
                 }
                 // Save updated next billing date
-                sub.next_billing_date = next_billing_date.format("YYYY-MM-DD");
+                sub?.next_billing_date = firebaseTimestamp;
             }
         }
     } catch (error) {
@@ -78,15 +67,15 @@ async function showNotificationIfLessThanFiveDays(subs: TGetubs[]) {
             "catch error showNotificationIfLessThanFiveDays function",
             JSON.stringify(error)
         );
-    }
+    }  
 }
-
-// Function to send a notification
+// Function to send a browser notification
 async function sendNotification(sub: TGetubs, message: string) {
-    await Notifications.scheduleNotificationAsync({
-        content: {
-            title: "Subscription Reminder",
+    // Check if Notification permission is granted
+    if (Notification.permission === "granted") {
+        new Notification("Subscription Reminder", {
             body: message,
+            icon: "/logo192.png", // Example icon
             data: {
                 sub_name: sub?.sub_name,
                 subId: sub.id,
@@ -100,9 +89,11 @@ async function sendNotification(sub: TGetubs, message: string) {
                 auto_renew: sub?.auto_renew,
                 created_at: sub?.created_at,
             },
-        },
-        trigger: null, // Send immediately
-    });
+        });
+    }
 }
 
+
+
 export { showNotificationIfLessThanFiveDays };
+

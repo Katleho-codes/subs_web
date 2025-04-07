@@ -3,19 +3,10 @@ import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useAuth } from "./useAuth";
-type TAddSub = {
-    sub_name: string;
-    category: string;
-    plan_name?: string;
-    billing_cycle?: string;
-    start_date?: string;
-    is_trial?: boolean;
-    trial_start_date?: string;
-    next_billing_date?: string;
-    trial_end_date?: string;
+type TAddBudget = {
+    month: string;
+    year: string;
     amount: string | number;
-    currency: string;
-    auto_renew?: boolean;
     created_at: string;
     // userId: string | undefined;
 };
@@ -30,7 +21,8 @@ const useAddBudget = () => {
         try {
             const q = query(
                 collection(db, "budget"),
-                where("sub_name", "==", values?.sub_name),
+                where("month", "==", values?.month),
+                where("year", "==", values?.year),
                 where("userId", "==", user?.uid) // ✅ Only check for current user's subscriptions
             );
 
@@ -41,8 +33,8 @@ const useAddBudget = () => {
             ); // ✅ Log results
 
             if (!querySnapshot.empty) {
-                console.log("Subscription exists, stopping execution."); // ✅ Log condition
-                toast.error("Subscription exists!");
+                console.log("Budget exists, stopping execution."); // ✅ Log condition
+                toast.error("Budget exists!");
                 setLoading(false);
                 return;
             }
@@ -51,15 +43,15 @@ const useAddBudget = () => {
             const filteredValues = Object.fromEntries(
                 Object.entries(values).filter(([_, v]) => v !== undefined)
             );
-            const docRef = await addDoc(collection(db, "subscriptions"), {
+            const docRef = await addDoc(collection(db, "budget"), {
                 ...filteredValues, // Use only valid values
                 userId: user?.uid, // Ensure userId is always set
             });
             // console.log("docRef", docRef);
             // getData();
-            toast.success("Subscription created!");
+            toast.success("Budget created!");
         } catch (error: any) {
-            console.log("create sub error", error);
+            console.log("create budget error", error);
             // toast.error("Subscription not created");
         } finally {
             setLoading(false); // Stop loading

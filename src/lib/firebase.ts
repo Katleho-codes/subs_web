@@ -2,6 +2,7 @@
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
+import { getMessaging, getToken, onMessage } from "firebase/messaging";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -20,6 +21,7 @@ const firebaseConfig = {
 // Ensure Firebase is initialized only once
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 const db = getFirestore(app);
+const messaging = typeof window !== "undefined" ? getMessaging(app) : null;
 const auth = getAuth(app);
 
-export { db, auth };
+export { db, auth, messaging, getToken, onMessage };

@@ -28,7 +28,7 @@ export default function Navbar() {
         <nav className="hidden lg:flex h-[4rem] border items-center px-2">
             <div className="mx-auto flex gap-3 items-center">
                 <Link href="/subscriptions">Subscriptions</Link>
-                <Link href="/">Analytics</Link>
+                <Link href="/analytics">Analytics</Link>
                 <Link href="/create_sub">Create new</Link>
             </div>
             <DropdownMenu>

@@ -4,13 +4,7 @@ import { Label } from '@/components/ui/label';
 import useAddSubscription from '@/hooks/useAddSusbcription';
 
 import { Button } from '@/components/ui/button';
-import { Calendar } from "@/components/ui/calendar";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover";
 import {
     Select,
     SelectContent,
@@ -26,9 +20,6 @@ import cycles from '@/lib/billing_cycles';
 import currencies from '@/lib/currencies';
 import { datetimestamp } from '@/lib/datetime';
 import categories from '@/lib/subscription_categories';
-import { cn } from '@/lib/utils';
-import { CalendarIcon } from '@heroicons/react/24/outline';
-import moment from 'moment';
 import React, { useState } from 'react';
 
 export default function CreateSubscriptionScreen() {
@@ -40,12 +31,12 @@ export default function CreateSubscriptionScreen() {
     const [amount, setAmount] = useState("")
     const [category, setCategory] = useState("")
     const [billing_cycle, setBillingCycle] = useState("")
-    const [start_date, setStartDate] = useState<Date>()
-    const [next_billing_date, setNextBillingDate] = useState<Date>()
+    const [start_date, setStartDate] = useState("")
+    const [next_billing_date, setNextBillingDate] = useState("")
     const [currency, setCurrency] = useState("")
     const [is_trial, setIsTrial] = useState(false)
-    const [trial_start_date, setTrialStartDate] = useState<Date>()
-    const [trial_end_date, setTrialEndDate] = useState<Date>()
+    const [trial_start_date, setTrialStartDate] = useState("")
+    const [trial_end_date, setTrialEndDate] = useState("")
     const [auto_renew, setAutoRenew] = useState(false)
     const toggleCheckbox = () => setAutoRenew(previousState => !previousState);
     const toggleTrialCheckbox = () => {
@@ -108,52 +99,12 @@ export default function CreateSubscriptionScreen() {
                                         <>
 
                                             <div className='mb-3'>
-                                                <Popover>
-                                                    <PopoverTrigger asChild>
-                                                        <Button
-                                                            variant={"outline"}
-                                                            className={cn(
-                                                                "w-full justify-start text-left font-normal cursor-pointer",
-                                                                !trial_start_date && "text-muted-foreground"
-                                                            )}
-                                                        >
-                                                            <CalendarIcon className="mr-2 h-4 w-4" />
-                                                            {trial_start_date ? moment(trial_start_date).format("LL") : <span>Trial start date</span>}
-                                                        </Button>
-                                                    </PopoverTrigger>
-                                                    <PopoverContent className="w-auto p-0">
-                                                        <Calendar
-                                                            mode="single"
-                                                            selected={trial_start_date}
-                                                            onSelect={setTrialStartDate}
-                                                            initialFocus
-                                                        />
-                                                    </PopoverContent>
-                                                </Popover>
+                                                <Label htmlFor='trial_start_date'>Trial start date</Label>
+                                                <Input type="date" name="trial_start_date" value={trial_start_date} onChange={(e) => setTrialStartDate(e.target.value)} />
                                             </div>
                                             <div className='mb-3'>
-                                                <Popover>
-                                                    <PopoverTrigger asChild>
-                                                        <Button
-                                                            variant={"outline"}
-                                                            className={cn(
-                                                                "w-full justify-start text-left font-normal cursor-pointer",
-                                                                !trial_end_date && "text-muted-foreground"
-                                                            )}
-                                                        >
-                                                            <CalendarIcon className="mr-2 h-4 w-4" />
-                                                            {trial_end_date ? moment(trial_end_date).format("LL") : <span>Trial end date</span>}
-                                                        </Button>
-                                                    </PopoverTrigger>
-                                                    <PopoverContent className="w-auto p-0">
-                                                        <Calendar
-                                                            mode="single"
-                                                            selected={trial_end_date}
-                                                            onSelect={setTrialEndDate}
-                                                            initialFocus
-                                                        />
-                                                    </PopoverContent>
-                                                </Popover>
+                                                <Label htmlFor='trial_end_date'>Trial end date</Label>
+                                                <Input type="date" name="trial_end_date" value={trial_end_date} onChange={(e) => setTrialEndDate(e.target.value)} />
                                             </div>
                                         </>
                                         :
@@ -179,52 +130,12 @@ export default function CreateSubscriptionScreen() {
                                                 </Select>
                                             </div>
                                             <div className='mb-3'>
-                                                <Popover>
-                                                    <PopoverTrigger asChild>
-                                                        <Button
-                                                            variant={"outline"}
-                                                            className={cn(
-                                                                "w-full justify-start text-left font-normal cursor-pointer",
-                                                                !start_date && "text-muted-foreground"
-                                                            )}
-                                                        >
-                                                            <CalendarIcon className="mr-2 h-4 w-4" />
-                                                            {start_date ? moment(start_date).format("LL") : <span>Start date</span>}
-                                                        </Button>
-                                                    </PopoverTrigger>
-                                                    <PopoverContent className="w-auto p-0">
-                                                        <Calendar
-                                                            mode="single"
-                                                            selected={start_date}
-                                                            onSelect={setStartDate}
-                                                            initialFocus
-                                                        />
-                                                    </PopoverContent>
-                                                </Popover>
+                                                <Label htmlFor='start_date'>Start date</Label>
+                                                <Input type="date" name="start_date" value={start_date} onChange={(e) => setStartDate(e.target.value)} />
                                             </div>
                                             <div className='mb-3'>
-                                                <Popover>
-                                                    <PopoverTrigger asChild>
-                                                        <Button
-                                                            variant={"outline"}
-                                                            className={cn(
-                                                                "w-full justify-start text-left font-normal cursor-pointer",
-                                                                !next_billing_date && "text-muted-foreground"
-                                                            )}
-                                                        >
-                                                            <CalendarIcon className="mr-2 h-4 w-4" />
-                                                            {next_billing_date ? moment(next_billing_date).format("LL") : <span>Next billing date</span>}
-                                                        </Button>
-                                                    </PopoverTrigger>
-                                                    <PopoverContent className="w-auto p-0">
-                                                        <Calendar
-                                                            mode="single"
-                                                            selected={next_billing_date}
-                                                            onSelect={setNextBillingDate}
-                                                            initialFocus
-                                                        />
-                                                    </PopoverContent>
-                                                </Popover>
+                                                <Label htmlFor='next_billing_date'>Due date</Label>
+                                                <Input type="date" name="next_billing_date" value={next_billing_date} onChange={(e) => setNextBillingDate(e.target.value)} />
                                             </div>
                                             <div className='mb-3'>
                                                 <Label htmlFor="amount" className='mb-2 text-gray-800'>Amount</Label>

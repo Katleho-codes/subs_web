@@ -1,17 +1,17 @@
-import { TGetubs } from "@/lib/types";
-import { useState, useEffect, useMemo } from "react";
-import { collection, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import { TGetubs } from "@/lib/types";
+import { collection, getDocs } from "firebase/firestore";
+import { useEffect, useState } from "react";
 import { useAuth } from "./useAuth";
 
-// todo: make the userId required
-const useGetSubscription = (userId?: string) => {
+
+const useGetSubscription = () => {
     const [subs, setSubs] = useState<TGetubs | any>(null); // Ensure initial state is null
     const [subsLoading, setSubsLoading] = useState<boolean>(true); // Loading state
     const { user } = useAuth();
     const getData = async () => {
         // If user is undefined or null, stop the fetch
-        // todo: uncomment
+
         if (!user) {
             setSubsLoading(false);
             return;
@@ -40,8 +40,6 @@ const useGetSubscription = (userId?: string) => {
         getData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-    // todo: uncomment
-    // }, [userId]);
     return { subs, subsLoading, getData };
 };
 
