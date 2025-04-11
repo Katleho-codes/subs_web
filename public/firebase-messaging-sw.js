@@ -4,8 +4,9 @@ importScripts(
 importScripts(
     "https://www.gstatic.com/firebasejs/10.7.2/firebase-messaging-compat.js"
 );
-
-firebase.initializeApp({});
+// todo: switch to env before pushing
+firebase.initializeApp({
+});
 
 const messaging = firebase.messaging();
 
