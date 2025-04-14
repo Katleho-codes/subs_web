@@ -41,6 +41,7 @@ import categories from '@/lib/subscription_categories';
 import { Timestamp } from "firebase/firestore";
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
+import { setDate } from "date-fns";
 
 
 const SubscriptionScreen = () => {
@@ -64,6 +65,7 @@ const SubscriptionScreen = () => {
     const [subToDelete, setSubToDelete] = useState<string | null>(null);
     const [dateFrom, setDateFrom] = useState("")
     const [dateTo, setDateTo] = useState("")
+    const [sortData, setSortData] = useState("")
 
     // const { token, notification } = useSubscriptionNotifications();
 
@@ -252,9 +254,47 @@ const SubscriptionScreen = () => {
 
     const filteredData = useMemo(() => {
         if (!subs) return [];
+        let filtered = [...subs];
 
-        
-    }, [second])
+        if (dateFrom && dateTo) {
+            filtered = filtered.filter((task: any) => {
+                const taskDate = moment(task?.created_at).format("YYYY-MM-DD");
+                return taskDate >= dateFrom && taskDate <= dateTo;
+            });
+        }
+        if (sortData === "new") {
+            filtered = filtered.sort((a: any, b: any) => {
+                return new Date(a.date_booked).getTime() - new Date(b.date_booked).getTime()
+            })
+        }
+        if (sortData === "price_low_to_high") {
+            filtered = filtered.sort((a: any, b: any) => {
+                return Number(a.amount) - Number(b.amount)
+            })
+        }
+        if (sortData === "price_high_to_low") {
+            filtered = filtered.sort((a: any, b: any) => {
+                return Number(b.amount) - Number(a.amount)
+            })
+        }
+        if (sortData === "name_a_to_z") {
+            filtered = filtered.sort((a: any, b: any) => {
+                return a.sub_name - b.sub_name
+            })
+        }
+        if (sortData === "name_z_to_a") {
+            filtered = filtered.sort((a: any, b: any) => {
+                return b.sub_name - a.sub_name
+            })
+        }
+        return filtered;
+
+    }, [dateFrom, dateTo, subs, sortData])
+    const handleResetFilters = () => {
+        setDateTo("")
+        setDateFrom("")
+        setSortData("")
+    }
 
     // allow filter by due soon, hight to low, or low to high
     // filter by date from to date to
@@ -278,22 +318,22 @@ const SubscriptionScreen = () => {
                                     <Input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} />
                                     <Input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)} />
                                 </div>
-                                <Select>
+                                <Select value={sortData} onValueChange={(e) => setSortData(e)}>
                                     <SelectTrigger className="w-[180px]">
-                                        <SelectValue placeholder="Filter by" />
+                                        <SelectValue placeholder="Sort by" />
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectGroup>
-                                            <SelectLabel>Filters</SelectLabel>
-                                            <SelectItem value="apple">Due soon</SelectItem>
-                                            <SelectItem value="banana">Banana</SelectItem>
-                                            <SelectItem value="blueberry">Blueberry</SelectItem>
-                                            <SelectItem value="grapes">Grapes</SelectItem>
-                                            <SelectItem value="pineapple">Pineapple</SelectItem>
+                                            <SelectLabel>Sort</SelectLabel>
+                                            <SelectItem value="new">New</SelectItem>
+                                            <SelectItem value="price_low_to_high">Price: low to high</SelectItem>
+                                            <SelectItem value="price_high_to_low">Price: high to low</SelectItem>
+                                            <SelectItem value="name_a_to_z">Name A-Z</SelectItem>
+                                            <SelectItem value="name_z_to_a">Name Z-A</SelectItem>
                                         </SelectGroup>
                                     </SelectContent>
                                 </Select>
-                                <Button>Reset filters</Button>
+                                <Button type="button" onClick={handleResetFilters}>Reset filters</Button>
                             </div>
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
                                 {/* {token && <p>Your FCM Token: {token}</p>} */}
@@ -305,7 +345,7 @@ const SubscriptionScreen = () => {
 
                                                     <>
                                                         {
-                                                            subs?.map((x) => (
+                                                            filteredData?.map((x) => (
                                                                 <div className="border p-4 rounded-md shadow-lg cursor-pointer" key={x.id}>
                                                                     <div className='flex items-center justify-between'>
                                                                         <div>
