@@ -10,25 +10,18 @@ import {
     AlertDialogTitle
 } from "@/components/ui/alert-dialog";
 import { Button } from '@/components/ui/button';
-import { Calendar } from "@/components/ui/calendar";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import Sidebar from '@/components/ui/sidebar';
 import { useAuth } from '@/hooks/useAuth';
 import useGetSubscriptions from '@/hooks/useGetSubscriptions';
 import { TGetubs } from '@/lib/types';
-import { cn } from '@/lib/utils';
-import { CalendarIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { TrashIcon } from '@heroicons/react/24/outline';
 // import moment from 'moment';
 import moment from 'moment-timezone';
 
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover";
 import {
     Select,
     SelectContent,
@@ -39,7 +32,6 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import useDeleteSubscription from '@/hooks/useDeleteSubscription';
-import useSubscriptionNotifications from "@/hooks/useSubscriptionNotifications";
 import useUpdateSubscription from '@/hooks/useUpdateSubscriptions';
 import cycles from '@/lib/billing_cycles';
 import currencies from '@/lib/currencies';
@@ -49,6 +41,8 @@ import categories from '@/lib/subscription_categories';
 import { Timestamp } from "firebase/firestore";
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
+
+
 const SubscriptionScreen = () => {
     const { user, googleLogin } = useAuth();
     const { subs, subsLoading } = useGetSubscriptions()
@@ -64,12 +58,14 @@ const SubscriptionScreen = () => {
     const [currency, setCurrency] = useState<string | null | undefined>("")
     const [auto_renew, setAutoRenew] = useState<boolean | null | undefined>(false)
     const { updateSubscription, updateSubscriptionLoading } = useUpdateSubscription()
-    const { deleteSubscription, deleteSubscriptionLoading } = useDeleteSubscription();
+    const { deleteSubscription } = useDeleteSubscription();
     const [deleteSubAlert, setDeleteSubAlert] = useState(false)
     const toggleCheckbox = () => setAutoRenew(previousState => !previousState);
     const [subToDelete, setSubToDelete] = useState<string | null>(null);
+    const [dateFrom, setDateFrom] = useState("")
+    const [dateTo, setDateTo] = useState("")
 
-    const { token, notification } = useSubscriptionNotifications();
+    // const { token, notification } = useSubscriptionNotifications();
 
     // useEffect(() => {
     //     if (notification) {
@@ -189,26 +185,8 @@ const SubscriptionScreen = () => {
     // Call the showNotificationIfLessThanFiveDays function when the component mounts or subscriptions change
     useEffect(() => {
         showNotificationIfLessThanFiveDays();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [subs]); // Re-run this logic whenever the subs change
-
-    // useEffect(() => {
-    //     if (notification?.notification?.title) {
-    //         // Show Sonner if in the app
-    //         if (document.visibilityState === "visible") {
-    //             toast(notification.notification.title, {
-    //                 description: notification.notification.body || "No description"
-    //             });
-    //         } else {
-    //             // Show browser notification if app is in the background
-    //             if (Notification.permission === "granted") {
-    //                 new Notification(notification.notification.title, {
-    //                     body: notification.notification.body,
-    //                     icon: notification.notification.image || "/logo192.png",
-    //                 });
-    //             }
-    //         }
-    //     }
-    // }, [notification]);
 
 
     // console.log(moment(datetimestamp).format('MMMM'))
@@ -272,6 +250,19 @@ const SubscriptionScreen = () => {
         await updateSubscription("subscriptions", selectedSub?.id, payload)
     }
 
+    const filteredData = useMemo(() => {
+        if (!subs) return [];
+
+        
+    }, [second])
+
+    // allow filter by due soon, hight to low, or low to high
+    // filter by date from to date to
+    // filter by category
+    // reset filters
+    // search bar
+    // Sort by
+
     return (
         <>
 
@@ -282,7 +273,28 @@ const SubscriptionScreen = () => {
                     <main>
                         <Sidebar />
                         <div className='container max-w-full lg:w-6xl lg:min-w-w-6xl mx-auto p-2'>
-                            <h1>Your budget for </h1>
+                            <div className="flex gap-2">
+                                <div className="flex gap-2">
+                                    <Input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} />
+                                    <Input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)} />
+                                </div>
+                                <Select>
+                                    <SelectTrigger className="w-[180px]">
+                                        <SelectValue placeholder="Filter by" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectGroup>
+                                            <SelectLabel>Filters</SelectLabel>
+                                            <SelectItem value="apple">Due soon</SelectItem>
+                                            <SelectItem value="banana">Banana</SelectItem>
+                                            <SelectItem value="blueberry">Blueberry</SelectItem>
+                                            <SelectItem value="grapes">Grapes</SelectItem>
+                                            <SelectItem value="pineapple">Pineapple</SelectItem>
+                                        </SelectGroup>
+                                    </SelectContent>
+                                </Select>
+                                <Button>Reset filters</Button>
+                            </div>
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
                                 {/* {token && <p>Your FCM Token: {token}</p>} */}
                                 {
@@ -354,17 +366,15 @@ const SubscriptionScreen = () => {
                                             <p><strong>Amount:</strong> {selectedSub?.amount}</p>
                                             <p>
                                                 <strong>Start Date:</strong>
-                                                {/* {selectedSub?.start_date ?
-                                                    moment(selectedSub?.start_date.seconds * 1000).format('MMMM Do YYYY, h:mm:ss a')
-                                                    : 'Date not available'} */}
-                                                {selectedSub?.start_date}
+                                                {selectedSub?.start_date ? selectedSub?.start_date
+                                                    : moment(selectedSub?.start_date.seconds * 1000).format('MMMM Do YYYY, h:mm:ss a')
+                                                }
                                             </p>
 
                                             <p><strong>Next Billing Date:</strong>
-                                                {/* {selectedSub?.next_billing_date ?
-                                                moment(selectedSub?.next_billing_date?.seconds * 1000).format('MMMM Do YYYY, h:mm:ss a')
-                                                : 'Date not available'} */}
-                                                {selectedSub?.next_billing_date}
+                                                {selectedSub?.next_billing_date ? selectedSub?.next_billing_date :
+                                                    moment(selectedSub?.next_billing_date?.seconds * 1000).format('MMMM Do YYYY, h:mm:ss a')
+                                                }
                                             </p>
                                             {/* Add more fields as necessary */}
                                         </div>) :
@@ -517,8 +527,8 @@ const SubscriptionScreen = () => {
                                     )}
                                 </DialogContent>
                             </Dialog>
-                        </div>
-                    </main>
+                        </div >
+                    </main >
             }
         </>
     )

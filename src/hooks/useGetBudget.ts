@@ -14,7 +14,7 @@ type TGetBudget = {
     // userId: string | undefined;
 };
 const useGetBudget = () => {
-    const [budget, setBudget] = useState<TGetBudget | any>(null); // Ensure initial state is null
+    const [budget, setBudget] = useState<TGetBudget[] | any>([]); // Ensure initial state is null
     const [budgetLoading, setBudgetLoading] = useState<boolean>(true); // Loading state
     const { user } = useAuth();
     const getData = async () => {
@@ -34,12 +34,12 @@ const useGetBudget = () => {
             );
             const querySnapshot = await getDocs(q);
 
-        
             const data = querySnapshot.docs?.map((doc) => ({
                 id: doc?.id,
                 ...doc?.data(),
             }));
-            if (data) setBudget(data); // ✅ Store in state
+            console.log(data);
+            if (data) setBudget(data[0]); // ✅ Store in state
         } catch (error: any) {
             console.error("get sub error", error?.message);
             // Alert.alert(error?.message);

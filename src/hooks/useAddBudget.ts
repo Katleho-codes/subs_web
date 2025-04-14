@@ -6,24 +6,23 @@ import { useAuth } from "./useAuth";
 type TAddBudget = {
     month: string;
     year: string;
-    amount: string | number;
+    amount: number | undefined;
     created_at: string;
-    // userId: string | undefined;
 };
 
 const useAddBudget = () => {
     const [addBudgetLoading, setLoading] = useState(false); // Loading state
 
-    const { user, loading, googleLogin, logout } = useAuth();
+    const { user} = useAuth();
     const addBudget = async (values: TAddBudget) => {
         if (!user) return;
         setLoading(true);
         try {
             const q = query(
                 collection(db, "budget"),
-                where("month", "==", values?.month),
-                where("year", "==", values?.year),
-                where("userId", "==", user?.uid) // ✅ Only check for current user's subscriptions
+                where("month", "==", values.month),
+                where("year", "==", values.year),
+                where("userId", "==", user?.uid)
             );
 
             const querySnapshot = await getDocs(q);
@@ -47,11 +46,11 @@ const useAddBudget = () => {
                 ...filteredValues, // Use only valid values
                 userId: user?.uid, // Ensure userId is always set
             });
-            // console.log("docRef", docRef);
+            console.log("docRef", docRef);
             // getData();
             toast.success("Budget created!");
         } catch (error: any) {
-            console.log("create budget error", error);
+            console.error("create budget error", error);
             // toast.error("Subscription not created");
         } finally {
             setLoading(false); // Stop loading

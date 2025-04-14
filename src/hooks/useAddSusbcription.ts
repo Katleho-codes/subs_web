@@ -20,11 +20,11 @@ type TAddSub = {
     // userId: string | undefined;
 };
 
-const useAddBudget = () => {
+const useAddSubscription = () => {
     const [addBudgetLoading, setLoading] = useState(false); // Loading state
 
-    const { user, loading, googleLogin, logout } = useAuth();
-    const addBudget = async (values: TAddBudget) => {
+    const { user } = useAuth();
+    const addBudget = async (values: TAddSub) => {
         if (!user) return;
         setLoading(true);
         try {
@@ -51,12 +51,11 @@ const useAddBudget = () => {
             const filteredValues = Object.fromEntries(
                 Object.entries(values).filter(([_, v]) => v !== undefined)
             );
-            const docRef = await addDoc(collection(db, "subscriptions"), {
+            await addDoc(collection(db, "subscriptions"), {
                 ...filteredValues, // Use only valid values
                 userId: user?.uid, // Ensure userId is always set
             });
-            // console.log("docRef", docRef);
-            // getData();
+
             toast.success("Subscription created!");
         } catch (error: any) {
             console.log("create sub error", error);
@@ -69,4 +68,4 @@ const useAddBudget = () => {
     return { addBudget, addBudgetLoading };
 };
 
-export default useAddBudget;
+export default useAddSubscription;
