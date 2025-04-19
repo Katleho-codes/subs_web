@@ -40,7 +40,7 @@ const useAddBudget = () => {
 
             // Remove undefined values
             const filteredValues = Object.fromEntries(
-                Object.entries(values).filter(([_, v]) => v !== undefined)
+                Object.entries(values).filter(([, v]) => v !== undefined)
             );
             const docRef = await addDoc(collection(db, "budget"), {
                 ...filteredValues, // Use only valid values
@@ -49,9 +49,13 @@ const useAddBudget = () => {
             console.log("docRef", docRef);
             // getData();
             toast.success("Budget created!");
-        } catch (error: any) {
-            console.error("create budget error", error);
-            // toast.error("Subscription not created");
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                console.error("create budget error", error.message);
+                // toast.error("Subscription not created");
+            } else {
+                console.error("create budget error", error);
+            }
         } finally {
             setLoading(false); // Stop loading
         }

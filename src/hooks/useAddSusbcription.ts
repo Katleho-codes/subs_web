@@ -21,15 +21,15 @@ type TAddSub = {
 };
 
 const useAddSubscription = () => {
-    const [addBudgetLoading, setLoading] = useState(false); // Loading state
+    const [addSubLoading, setLoading] = useState(false); // Loading state
 
     const { user } = useAuth();
-    const addBudget = async (values: TAddSub) => {
+    const addSub = async (values: TAddSub) => {
         if (!user) return;
         setLoading(true);
         try {
             const q = query(
-                collection(db, "budget"),
+                collection(db, "subscriptions"),
                 where("sub_name", "==", values?.sub_name),
                 where("userId", "==", user?.uid) // ✅ Only check for current user's subscriptions
             );
@@ -49,7 +49,7 @@ const useAddSubscription = () => {
 
             // Remove undefined values
             const filteredValues = Object.fromEntries(
-                Object.entries(values).filter(([_, v]) => v !== undefined)
+                Object.entries(values).filter(([, v]) => v !== undefined)
             );
             await addDoc(collection(db, "subscriptions"), {
                 ...filteredValues, // Use only valid values
@@ -57,15 +57,19 @@ const useAddSubscription = () => {
             });
 
             toast.success("Subscription created!");
-        } catch (error: any) {
-            console.log("create sub error", error);
-            // toast.error("Subscription not created");
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                console.error("create sub error", error.message);
+                // toast.error("Subscription not created");
+            } else {
+                console.error("create sub error", error);
+            }
         } finally {
             setLoading(false); // Stop loading
         }
     };
 
-    return { addBudget, addBudgetLoading };
+    return { addSub, addSubLoading };
 };
 
 export default useAddSubscription;

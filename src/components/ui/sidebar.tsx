@@ -17,7 +17,7 @@ import Navbar from "./navbar";
 
 
 const Sidebar = () => {
-    const { user, loading, googleLogin, logout } = useAuth()
+    const { user, logout } = useAuth()
     return (
         <div>
             <Sheet>
@@ -45,14 +45,6 @@ const Sidebar = () => {
 
 
             <Navbar />
-            {/* <Link href="/" className="no-underline hover:no-underline cursor-pointer">
-                <Image
-                    src={"/church_logo.jpeg"}
-                    alt="Jubilee Harvest International logo"
-                    width={60}
-                    height={60}
-                />
-            </Link> */}
 
         </div>
     );

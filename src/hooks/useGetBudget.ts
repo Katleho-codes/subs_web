@@ -1,10 +1,9 @@
-import { TGetubs } from "@/lib/types";
-import { useState, useEffect, useMemo } from "react";
-import { collection, getDocs, query, where } from "firebase/firestore";
-import { db } from "@/lib/firebase";
-import { useAuth } from "./useAuth";
-import moment from "moment";
 import { datetimestamp } from "@/lib/datetime";
+import { db } from "@/lib/firebase";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import moment from "moment";
+import { useEffect, useState } from "react";
+import { useAuth } from "./useAuth";
 
 type TGetBudget = {
     month: string;
@@ -14,7 +13,7 @@ type TGetBudget = {
     // userId: string | undefined;
 };
 const useGetBudget = () => {
-    const [budget, setBudget] = useState<TGetBudget[] | any>([]); // Ensure initial state is null
+    const [budget, setBudget] = useState<TGetBudget | null>(null);
     const [budgetLoading, setBudgetLoading] = useState<boolean>(true); // Loading state
     const { user } = useAuth();
     const getData = async () => {
@@ -34,15 +33,30 @@ const useGetBudget = () => {
             );
             const querySnapshot = await getDocs(q);
 
-            const data = querySnapshot.docs?.map((doc) => ({
-                id: doc?.id,
-                ...doc?.data(),
-            }));
-            console.log(data);
-            if (data) setBudget(data[0]); // ✅ Store in state
-        } catch (error: any) {
-            console.error("get sub error", error?.message);
-            // Alert.alert(error?.message);
+            // const data = querySnapshot.docs?.map((doc) => ({
+            //     id: doc?.id,
+            //     ...doc?.data(),
+            // }));
+            const data: (TGetBudget & { id: string })[] =
+                querySnapshot.docs.map((doc) => {
+                    const docData = doc.data();
+                    return {
+                        id: doc.id,
+                        month: docData.month,
+                        year: docData.year,
+                        amount: docData.amount,
+                        created_at: docData.created_at,
+                    };
+                });
+
+            if (data && data.length > 0) setBudget(data[0]);
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                console.error("get sub error", error?.message);
+                // toast.error("Subscription not created");
+            } else {
+                console.error("get sub error", error);
+            }
         } finally {
             setBudgetLoading(false); // End loading
         }

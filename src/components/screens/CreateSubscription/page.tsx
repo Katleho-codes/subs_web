@@ -21,9 +21,10 @@ import currencies from '@/lib/currencies';
 import { datetimestamp } from '@/lib/datetime';
 import categories from '@/lib/subscription_categories';
 import React, { useState } from 'react';
+import NotLoggedIn from '../NotLoggedIn/page';
 
 export default function CreateSubscriptionScreen() {
-    const { user, googleLogin, logout } = useAuth();
+    const { user } = useAuth();
 
     const { addSub, addSubLoading } = useAddSubscription()
     const [sub_name, setSubName] = useState("")
@@ -58,7 +59,7 @@ export default function CreateSubscriptionScreen() {
 
             {
                 !user ?
-                    <Button onClick={googleLogin}>Sign in with Google</Button> :
+                    <NotLoggedIn /> :
                     <main>
                         <Sidebar />
                         <div className='container max-w-full lg:w-md lg:min-w-md mx-auto p-2'>
@@ -87,7 +88,7 @@ export default function CreateSubscriptionScreen() {
                                     <Checkbox id="is_trial" checked={is_trial} onCheckedChange={toggleTrialCheckbox} className='cursor-pointer' />
                                     <label
                                         htmlFor="is_trial"
-                                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-gray-800"
                                     >
                                         Trial subscription? (Check for yes, leave blank for no)
                                     </label>
@@ -99,11 +100,11 @@ export default function CreateSubscriptionScreen() {
                                         <>
 
                                             <div className='mb-3'>
-                                                <Label htmlFor='trial_start_date'>Trial start date</Label>
+                                                <Label htmlFor='trial_start_date' className='mb-2 text-gray-800'>Trial start date</Label>
                                                 <Input type="date" name="trial_start_date" value={trial_start_date} onChange={(e) => setTrialStartDate(e.target.value)} />
                                             </div>
                                             <div className='mb-3'>
-                                                <Label htmlFor='trial_end_date'>Trial end date</Label>
+                                                <Label htmlFor='trial_end_date' className='mb-2 text-gray-800'>Trial end date</Label>
                                                 <Input type="date" name="trial_end_date" value={trial_end_date} onChange={(e) => setTrialEndDate(e.target.value)} />
                                             </div>
                                         </>
@@ -130,12 +131,12 @@ export default function CreateSubscriptionScreen() {
                                                 </Select>
                                             </div>
                                             <div className='mb-3'>
-                                                <Label htmlFor='start_date'>Start date</Label>
-                                                <Input type="date" name="start_date" value={start_date} onChange={(e) => setStartDate(e.target.value)} />
+                                                <Label htmlFor='start_date' className='mb-2 text-gray-800'>Start date</Label>
+                                                <Input type="date" name="start_date" className='focus-visible:border-gray-100 focus-visible:outline-none focus-visible:ring-0 border-gray-200' value={start_date} onChange={(e) => setStartDate(e.target.value)} />
                                             </div>
                                             <div className='mb-3'>
-                                                <Label htmlFor='next_billing_date'>Due date</Label>
-                                                <Input type="date" name="next_billing_date" value={next_billing_date} onChange={(e) => setNextBillingDate(e.target.value)} />
+                                                <Label htmlFor='next_billing_date' className='mb-2 text-gray-800'>Due date</Label>
+                                                <Input type="date" name="next_billing_date" className='focus-visible:border-gray-100 focus-visible:outline-none focus-visible:ring-0 border-gray-200' value={next_billing_date} onChange={(e) => setNextBillingDate(e.target.value)} />
                                             </div>
                                             <div className='mb-3'>
                                                 <Label htmlFor="amount" className='mb-2 text-gray-800'>Amount</Label>
@@ -160,7 +161,7 @@ export default function CreateSubscriptionScreen() {
                                                 <Checkbox id="terms" checked={auto_renew} onCheckedChange={toggleCheckbox} className='cursor-pointer' />
                                                 <label
                                                     htmlFor="terms"
-                                                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                                                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-gray-800"
                                                 >
                                                     Auto renew?
                                                 </label>
@@ -168,7 +169,7 @@ export default function CreateSubscriptionScreen() {
                                         </>
                                 }
 
-                                <Button type="submit" disabled={addSubLoading} className='bg-gray-800 w-full shadow-none cursor-pointer'>{addSubLoading ? 'Adding...' : 'Add subscription'}</Button>
+                                <Button type="submit" disabled={addSubLoading} className='btn w-full shadow-none cursor-pointer'>{addSubLoading ? 'Adding...' : 'Add subscription'}</Button>
                             </form>
                         </div>
                     </main>

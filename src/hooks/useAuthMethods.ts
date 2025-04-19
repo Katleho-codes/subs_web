@@ -4,7 +4,7 @@ import {
     GoogleAuthProvider,
     signOut,
 } from "firebase/auth";
-import useAuth from "./useAuth";
+import { useAuth } from "./useAuth";
 
 const useAuthMethods = () => {
     const auth = getAuth();

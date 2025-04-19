@@ -4,21 +4,6 @@ import { useState } from "react";
 import { useAuth } from "./useAuth";
 import { toast } from "sonner";
 
-type TUpdateSubscription = {
-    sub_name: string;
-    category: string;
-    plan_name?: string;
-    billing_cycle?: string;
-    start_date?: string;
-    trial_start_date?: string;
-    next_billing_date?: string;
-    trial_end_date?: string;
-    amount: string | number;
-    currency: string;
-    auto_renew?: boolean;
-    created_at: string;
-};
-
 const useUpdateSubscription = () => {
     const [updateSubscriptionLoading, setLoading] = useState(false); // Loading state
     const { user } = useAuth();
@@ -53,9 +38,7 @@ const useUpdateSubscription = () => {
             }
             // Remove undefined values
             const filteredValues = Object.fromEntries(
-                Object.entries(updatedFields).filter(
-                    ([_, v]) => v !== undefined
-                )
+                Object.entries(values).filter(([, v]) => v !== undefined)
             );
             // Step 3: Update if there are any changes
             if (Object.keys(filteredValues).length > 0) {
@@ -64,9 +47,13 @@ const useUpdateSubscription = () => {
             } else {
                 console.log("No changes detected. No update made.");
             }
-        } catch (error: any) {
-            console.error(error);
-            console.error("Error updating document:", error);
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                console.error("Error updating document:", error?.message);
+                // toast.error("Subscription not created");
+            } else {
+                console.error("Error updating document:", error);
+            }
         } finally {
             setLoading(false);
         }

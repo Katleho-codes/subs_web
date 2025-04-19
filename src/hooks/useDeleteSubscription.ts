@@ -23,9 +23,14 @@ const useDeleteSubscription = () => {
             await deleteDoc(docRef);
 
             toast.success("Subscription deleted!");
-        } catch (error: any) {
-            console.error("Error deleting document:", error);
-            toast.error("Failed to delete subscription.");
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                console.error("Error deleting document:", error.message);
+                toast.error("Failed to delete subscription.");
+            } else {
+                console.error("create sub error", error);
+                toast.error("Failed to delete subscription.");
+            }
         } finally {
             setLoading(false);
         }

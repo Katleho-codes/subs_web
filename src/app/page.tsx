@@ -1,9 +1,14 @@
 import CreateSubscriptionScreen from '@/components/screens/CreateSubscription/page'
-import React from 'react'
+import type { Metadata } from 'next'
 
+export const metadata: Metadata = {
+    title: 'Subscriptions',
+    description: '...',
+}
 const Home = () => {
     return (
-        <CreateSubscriptionScreen />
+         <CreateSubscriptionScreen />
+   
     )
 }
 

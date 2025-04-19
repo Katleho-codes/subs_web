@@ -41,11 +41,10 @@ import categories from '@/lib/subscription_categories';
 import { Timestamp } from "firebase/firestore";
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
-import { setDate } from "date-fns";
-
+import NotLoggedIn from "../NotLoggedIn/page";
 
 const SubscriptionScreen = () => {
-    const { user, googleLogin } = useAuth();
+    const { user } = useAuth();
     const { subs, subsLoading } = useGetSubscriptions()
     const [selectedSub, setSelectedSub] = useState<TGetubs | null>(null); // Store selected subscription
     const [isEditing, setIsEditing] = useState(false);
@@ -54,8 +53,8 @@ const SubscriptionScreen = () => {
     const [amount, setAmount] = useState<string | null | undefined>()
     const [category, setCategory] = useState<string | null | undefined>("")
     const [billing_cycle, setBillingCycle] = useState<string | undefined>("")
-    const [start_date, setStartDate] = useState<string | null | undefined>("")
-    const [next_billing_date, setNextBillingDate] = useState<string | null | undefined>("")
+    const [start_date, setStartDate] = useState<string>("")
+    const [next_billing_date, setNextBillingDate] = useState<string>("")
     const [currency, setCurrency] = useState<string | null | undefined>("")
     const [auto_renew, setAutoRenew] = useState<boolean | null | undefined>(false)
     const { updateSubscription, updateSubscriptionLoading } = useUpdateSubscription()
@@ -225,13 +224,21 @@ const SubscriptionScreen = () => {
             setCurrency(memoizedSelectedSub.currency);
             // Convert the Firebase Timestamp to a JavaScript Date when setting state
 
-            setStartDate(memoizedSelectedSub?.start_date);
+            setStartDate(typeof memoizedSelectedSub?.start_date === 'string'
+                ? memoizedSelectedSub.start_date
+                : memoizedSelectedSub?.start_date?.seconds
+                    ? moment(memoizedSelectedSub.start_date.seconds * 1000).format('MMMM Do YYYY, h:mm:ss a')
+                    : 'N/A');
             // const secondsNextBillDate = memoizedSelectedSub?.next_billing_date?.seconds ?? 0;
             // const nextBillDate = moment(secondsNextBillDate * 1000).format('YYYY-MM-DD');
-            setNextBillingDate(memoizedSelectedSub?.next_billing_date);
+            setNextBillingDate(typeof memoizedSelectedSub?.next_billing_date === 'string'
+                ? memoizedSelectedSub.next_billing_date
+                : memoizedSelectedSub?.next_billing_date?.seconds
+                    ? moment(memoizedSelectedSub.next_billing_date.seconds * 1000).format('MMMM Do YYYY, h:mm:ss a')
+                    : 'N/A');
             setAutoRenew(memoizedSelectedSub.auto_renew);
         }
-    }, [memoizedSelectedSub]);
+    }, [memoizedSelectedSub, memoizedSelectedSub?.start_date]);
 
     const updateData = async () => {
         const payload = {
@@ -252,41 +259,46 @@ const SubscriptionScreen = () => {
         await updateSubscription("subscriptions", selectedSub?.id, payload)
     }
 
+
     const filteredData = useMemo(() => {
         if (!subs) return [];
         let filtered = [...subs];
 
         if (dateFrom && dateTo) {
-            filtered = filtered.filter((task: any) => {
+            filtered = filtered.filter((task: TGetubs) => {
                 const taskDate = moment(task?.created_at).format("YYYY-MM-DD");
                 return taskDate >= dateFrom && taskDate <= dateTo;
             });
         }
         if (sortData === "new") {
-            filtered = filtered.sort((a: any, b: any) => {
-                return new Date(a.date_booked).getTime() - new Date(b.date_booked).getTime()
-            })
+            filtered = filtered.sort((a, b) => {
+                return new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime();
+            });
         }
+
+        // The! after date_booked tells TypeScript “trust me, this exists.” If it might be missing or invalid, you should add safety checks instead.
         if (sortData === "price_low_to_high") {
-            filtered = filtered.sort((a: any, b: any) => {
+            filtered = filtered.sort((a: TGetubs, b: TGetubs) => {
                 return Number(a.amount) - Number(b.amount)
             })
         }
         if (sortData === "price_high_to_low") {
-            filtered = filtered.sort((a: any, b: any) => {
+            filtered = filtered.sort((a: TGetubs, b: TGetubs) => {
                 return Number(b.amount) - Number(a.amount)
             })
         }
         if (sortData === "name_a_to_z") {
-            filtered = filtered.sort((a: any, b: any) => {
-                return a.sub_name - b.sub_name
-            })
+            filtered = filtered.sort((a: TGetubs, b: TGetubs) => {
+                return (a.sub_name || "").localeCompare(b.sub_name || "");
+            });
         }
         if (sortData === "name_z_to_a") {
-            filtered = filtered.sort((a: any, b: any) => {
-                return b.sub_name - a.sub_name
-            })
+            filtered = filtered.sort((a: TGetubs, b: TGetubs) => {
+                return (b.sub_name || "").localeCompare(a.sub_name || "");
+            });
         }
+
+
         return filtered;
 
     }, [dateFrom, dateTo, subs, sortData])
@@ -296,19 +308,13 @@ const SubscriptionScreen = () => {
         setSortData("")
     }
 
-    // allow filter by due soon, hight to low, or low to high
-    // filter by date from to date to
-    // filter by category
-    // reset filters
-    // search bar
-    // Sort by
 
     return (
         <>
 
             {
                 !user ?
-                    <Button onClick={googleLogin}>Sign in with Google</Button> :
+                    <NotLoggedIn /> :
 
                     <main>
                         <Sidebar />
@@ -333,7 +339,7 @@ const SubscriptionScreen = () => {
                                         </SelectGroup>
                                     </SelectContent>
                                 </Select>
-                                <Button type="button" onClick={handleResetFilters}>Reset filters</Button>
+                                <Button type="button" className='bg-[#dc2f02] hover:bg-[#e85d04] cursor-pointer' onClick={handleResetFilters}>Reset filters</Button>
                             </div>
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
                                 {/* {token && <p>Your FCM Token: {token}</p>} */}
@@ -350,7 +356,11 @@ const SubscriptionScreen = () => {
                                                                     <div className='flex items-center justify-between'>
                                                                         <div>
                                                                             <h3 className="text-lg font-bold mb-2">{x.sub_name}</h3>
-                                                                            <p className="leading-2 mb-2">Due: {x?.next_billing_date}</p>
+                                                                            <p className="leading-2 mb-2">Due: {typeof x?.next_billing_date === 'string'
+                                                                                ? x.next_billing_date
+                                                                                : x?.next_billing_date?.seconds
+                                                                                    ? moment(x.next_billing_date.seconds * 1000).format('MMMM Do YYYY, h:mm:ss a')
+                                                                                    : 'N/A'}</p>
                                                                         </div>
                                                                         <Button className='cursor-pointer' onClick={() => {
                                                                             setSubToDelete(x.id); // Set the subscription ID BEFORE opening the dialog
@@ -361,7 +371,7 @@ const SubscriptionScreen = () => {
                                                                     <p className="mb-2">{x.plan_name}</p>
                                                                     <div className='flex gap-3'>
                                                                         <Button className='cursor-pointer' onClick={() => handleCardView(x)} variant="outline">View</Button>
-                                                                        <Button className='cursor-pointer' onClick={() => handleCardEdit(x)} variant="default">Edit</Button>
+                                                                        <Button className='cursor-pointer btn' onClick={() => handleCardEdit(x)} variant="default">Edit</Button>
                                                                     </div>
                                                                 </div>
                                                             ))
@@ -406,15 +416,25 @@ const SubscriptionScreen = () => {
                                             <p><strong>Amount:</strong> {selectedSub?.amount}</p>
                                             <p>
                                                 <strong>Start Date:</strong>
-                                                {selectedSub?.start_date ? selectedSub?.start_date
-                                                    : moment(selectedSub?.start_date.seconds * 1000).format('MMMM Do YYYY, h:mm:ss a')
+                                                {
+                                                    typeof selectedSub?.start_date === 'string'
+                                                        ? selectedSub.start_date
+                                                        : selectedSub?.start_date?.seconds
+                                                            ? moment(selectedSub.start_date.seconds * 1000).format('MMMM Do YYYY, h:mm:ss a')
+                                                            : 'N/A'
                                                 }
+
                                             </p>
 
                                             <p><strong>Next Billing Date:</strong>
-                                                {selectedSub?.next_billing_date ? selectedSub?.next_billing_date :
-                                                    moment(selectedSub?.next_billing_date?.seconds * 1000).format('MMMM Do YYYY, h:mm:ss a')
+                                                {
+                                                    typeof selectedSub?.next_billing_date === 'string'
+                                                        ? selectedSub.next_billing_date
+                                                        : selectedSub?.next_billing_date?.seconds
+                                                            ? moment(selectedSub.next_billing_date.seconds * 1000).format('MMMM Do YYYY, h:mm:ss a')
+                                                            : 'N/A'
                                                 }
+
                                             </p>
                                             {/* Add more fields as necessary */}
                                         </div>) :
@@ -450,7 +470,8 @@ const SubscriptionScreen = () => {
                                                                 <Input type="text" value={plan_name || ""} className='focus-visible:shadow-none focus-visible:ring-0 focus-visible:outline-none focus-visible:border-[#eee]' onChange={(e) => setPlanName(e.target.value)} />
                                                             </div>
                                                             <div className='mb-3'>
-                                                                <Select value={billing_cycle} onValueChange={(e) => setBillingCycle(e)}>
+                                                                <Label htmlFor="billing_cycle" className='mb-2 text-gray-800'>Billing cycle</Label>
+                                                                <Select name="billing_cycle" value={billing_cycle} onValueChange={(e) => setBillingCycle(e)}>
                                                                     <SelectTrigger className="w-full cursor-pointer text-gray-800 focus-visible:shadow-none focus-visible:ring-0 focus-visible:outline-none focus-visible:border-[#eee]">
                                                                         <SelectValue placeholder="Select a billing cycle" />
                                                                     </SelectTrigger>
@@ -464,68 +485,22 @@ const SubscriptionScreen = () => {
                                                                     </SelectContent>
                                                                 </Select>
                                                             </div>
-                                                            {/* <div className='mb-3'>
-                                                                <Popover>
-                                                                    <PopoverTrigger asChild>
-                                                                        <Button
-                                                                            variant={"outline"}
-                                                                            className={cn(
-                                                                                "w-full justify-start text-left font-normal cursor-pointer",
-                                                                                !start_date && "text-muted-foreground"
-                                                                            )}
-                                                                        >
-                                                                            <CalendarIcon className="mr-2 h-4 w-4" />
-                                                                            {start_date ? moment(start_date).format("LL") : <span>Start date</span>}
-                                                                        </Button>
-                                                                    </PopoverTrigger>
-                                                                    <PopoverContent className="w-auto p-0">
-                                                                        <Calendar
-                                                                            mode="single"
-                                                                            selected={start_date}
-                                                                            onSelect={setStartDate}
-                                                                            initialFocus
-                                                                        />
-                                                                    </PopoverContent>
-                                                                </Popover>
-                                                            </div>
+
                                                             <div className='mb-3'>
-                                                                <Popover>
-                                                                    <PopoverTrigger asChild>
-                                                                        <Button
-                                                                            variant={"outline"}
-                                                                            className={cn(
-                                                                                "w-full justify-start text-left font-normal cursor-pointer",
-                                                                                !next_billing_date && "text-muted-foreground"
-                                                                            )}
-                                                                        >
-                                                                            <CalendarIcon className="mr-2 h-4 w-4" />
-                                                                            {next_billing_date ? moment(next_billing_date).format("LL") : <span>Next billing date</span>}
-                                                                        </Button>
-                                                                    </PopoverTrigger>
-                                                                    <PopoverContent className="w-auto p-0">
-                                                                        <Calendar
-                                                                            mode="single"
-                                                                            selected={next_billing_date}
-                                                                            onSelect={setNextBillingDate}
-                                                                            initialFocus
-                                                                        />
-                                                                    </PopoverContent>
-                                                                </Popover>
-                                                            </div> */}
-                                                            <div className='mb-3'>
-                                                                <Label htmlFor='start_date'>Start date</Label>
+                                                                <Label htmlFor='start_date' className='mb-2 text-gray-800'>Start date</Label>
                                                                 <Input type="date" name="start_date" value={start_date || ""} onChange={(e) => setStartDate(e.target.value)} />
                                                             </div>
                                                             <div className='mb-3'>
-                                                                <Label htmlFor='next_billing_date'>Due date</Label>
+                                                                <Label htmlFor='next_billing_date' className='mb-2 text-gray-800'>Due date</Label>
                                                                 <Input type="date" name="next_billing_date" value={next_billing_date || ""} onChange={(e) => setNextBillingDate(e.target.value)} />
                                                             </div>
                                                             <div className='mb-3'>
                                                                 <Label htmlFor="amount" className='mb-2 text-gray-800'>Amount</Label>
-                                                                <Input type="text" value={amount || ""} className='focus-visible:shadow-none focus-visible:ring-0 focus-visible:outline-none focus-visible:border-[#eee]' onChange={(e) => setAmount(e.target.value)} />
+                                                                <Input type="text" className="w-full placeholder:font-regular placeholder:text-gray-400 placeholder:text-sm shadow-none border border-gray-200 focus-visible:ring-1 focus-visible:ring-gray-300 focus-visible:border-none focus-visible:shadow-none focus-visible:outline-none" value={amount || ""} onChange={(e) => setAmount(e.target.value)} />
                                                             </div>
                                                             <div className='mb-3'>
-                                                                <Select value={currency || ""} onValueChange={(e) => setCurrency(e)}>
+                                                                <Label htmlFor="currency" className='mb-2 text-gray-800'>Currency</Label>
+                                                                <Select name="currency" value={currency || ""} onValueChange={(e) => setCurrency(e)}>
                                                                     <SelectTrigger className="w-full cursor-pointer focus-visible:shadow-none focus-visible:ring-0 focus-visible:outline-none focus-visible:border-[#eee]">
                                                                         <SelectValue placeholder="Select a currency" />
                                                                     </SelectTrigger>
@@ -551,7 +526,7 @@ const SubscriptionScreen = () => {
                                                         </>
 
 
-                                                        <Button type="button" className='bg-gray-800 w-full shadow-none cursor-pointer' disabled={updateSubscriptionLoading} onClick={updateData}>{updateSubscriptionLoading ? 'Updating...' : 'Update subscription'}</Button>
+                                                        <Button type="button" className='btn w-full shadow-none cursor-pointer' disabled={updateSubscriptionLoading} onClick={updateData}>{updateSubscriptionLoading ? 'Updating...' : 'Update subscription'}</Button>
                                                     </form>
                                                 </>
 
@@ -561,7 +536,7 @@ const SubscriptionScreen = () => {
                                     </DialogClose> */}
                                     {/* Show Edit button in View Mode */}
                                     {!isEditing && (
-                                        <Button className='cursor-pointer' onClick={() => setIsEditing(true)} variant="default">
+                                        <Button className='cursor-pointer btn' onClick={() => setIsEditing(true)} variant="default">
                                             Edit details
                                         </Button>
                                     )}
