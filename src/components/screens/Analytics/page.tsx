@@ -46,7 +46,6 @@ export default function AnalyticsScreen() {
             amount, month, year, created_at
         }
         await addBudget(payload)
-        // console.log(payload)
     }
     // const totalSubAmount = subs?.reduce((acc, item) => {
     //     return acc + Number(item?.amount || 0);
@@ -54,14 +53,6 @@ export default function AnalyticsScreen() {
     // const budgetLeft = budget?.amount - totalSubAmount;
 
 
-
-    // show amount spent in the for each month (can be filtered by date from and to)
-    // show highest categories spent on
-    // show lowest categories spent on
-    // show how many subs are unpaid
-    // how many canceled subs
-    // how many subs are auto renew
-    // how many active subscriptions (not canceled)
     const filteredSubs = subs?.filter(sub => {
         const taskDate = moment(sub?.created_at).format("YYYY-MM-DD");
 

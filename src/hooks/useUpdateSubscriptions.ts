@@ -2,7 +2,7 @@ import { db } from "@/lib/firebase";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { useState } from "react";
 import { useAuth } from "./useAuth";
-import { toast } from "sonner";
+import { toast } from "react-hot-toast";
 
 const useUpdateSubscription = () => {
     const [updateSubscriptionLoading, setLoading] = useState(false); // Loading state

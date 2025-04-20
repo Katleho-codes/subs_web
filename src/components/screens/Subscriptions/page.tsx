@@ -40,7 +40,7 @@ import { datetimestamp } from "@/lib/datetime";
 import categories from '@/lib/subscription_categories';
 import { Timestamp } from "firebase/firestore";
 import { useEffect, useMemo, useState } from 'react';
-import { toast } from 'sonner';
+import { toast } from 'react-hot-toast';
 import NotLoggedIn from "../NotLoggedIn/page";
 
 const SubscriptionScreen = () => {
@@ -105,9 +105,13 @@ const SubscriptionScreen = () => {
                     // Send the notification
                     if (document.visibilityState === "visible") {
                         // Show Sonner notification if in the app
-                        toast("Subscription Reminder", {
-                            description: message,
-                        });
+                        toast(
+                            `${`Subscription Reminder\n\n${message}`}`,
+                            {
+                                duration: 6000,
+                            }
+                        );
+
                     } else {
                         // Show browser notification if app is in the background
                         if (Notification.permission === "granted") {
@@ -130,9 +134,12 @@ const SubscriptionScreen = () => {
                         // Send the notification for when subscription renews
                         if (document.visibilityState === "visible") {
                             // Show Sonner notification if in the app
-                            toast("Subscription renewal", {
-                                description: 'Subscription will now renew for the next month',
-                            });
+                            toast(
+                                `${`Subscription renewal\n\nSubscription will now renew for the next month`}`,
+                                {
+                                    duration: 6000,
+                                }
+                            );
                         } else {
                             // Show browser notification if app is in the background
                             if (Notification.permission === "granted") {
@@ -147,9 +154,12 @@ const SubscriptionScreen = () => {
                         // Send the notification for when subscription renews
                         if (document.visibilityState === "visible") {
                             // Show Sonner notification if in the app
-                            toast("Subscription renewal", {
-                                description: 'Subscription will now renew for the next week',
-                            });
+                            toast(
+                                `${`Subscription renewal\n\nSubscription will now renew for the next week`}`,
+                                {
+                                    duration: 6000,
+                                }
+                            );
                         } else {
                             // Show browser notification if app is in the background
                             if (Notification.permission === "granted") {
@@ -164,9 +174,12 @@ const SubscriptionScreen = () => {
                         // Send the notification for when subscription renews
                         if (document.visibilityState === "visible") {
                             // Show Sonner notification if in the app
-                            toast("Subscription renewal", {
-                                description: 'Subscription will now renew for the next year',
-                            });
+                            toast(
+                                `${`Subscription renewal\n\nSubscription will now renew for the next year`}`,
+                                {
+                                    duration: 6000,
+                                }
+                            )
                         } else {
                             // Show browser notification if app is in the background
                             if (Notification.permission === "granted") {
@@ -190,7 +203,6 @@ const SubscriptionScreen = () => {
     }, [subs]); // Re-run this logic whenever the subs change
 
 
-    // console.log(moment(datetimestamp).format('MMMM'))
     const handleCardView = (sub: TGetubs) => {
         setSelectedSub(sub); setIsEditing(false)
     };
@@ -204,7 +216,7 @@ const SubscriptionScreen = () => {
             await deleteSubscription("subscriptions", subToDelete); // Call Firebase delete function
             toast.success("Subscription deleted!");
         } catch (error) {
-            console.error("Error deleting subscription:", error);
+            console.log(error)
             toast.error("Failed to delete subscription.");
         } finally {
             setDeleteSubAlert(false); // Close dialog
@@ -340,6 +352,16 @@ const SubscriptionScreen = () => {
                                     </SelectContent>
                                 </Select>
                                 <Button type="button" className='bg-[#dc2f02] hover:bg-[#e85d04] cursor-pointer' onClick={handleResetFilters}>Reset filters</Button>
+                                {/* todo: undo */}
+                                <Button type="button" className='bg-[#dc2f02] hover:bg-[#e85d04] cursor-pointer' onClick={() =>
+                                    toast.success(
+                                        `${`Subscription renewal\n\nSubscription will now renew for the next year`}`,
+                                        {
+                                            duration: 6000,
+                                        }
+                                    )
+                                }>Toast</Button>
+
                             </div>
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
                                 {/* {token && <p>Your FCM Token: {token}</p>} */}

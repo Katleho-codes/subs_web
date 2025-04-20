@@ -1,7 +1,7 @@
-import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/hooks/useAuth";
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
+import { Toaster } from 'react-hot-toast';
 import "./globals.css";
 const inter = Geist({
   subsets: ["latin"],
@@ -26,7 +26,10 @@ export default function RootLayout({
       >
         <AuthProvider>
           {children}
-          <Toaster className="text-gray-800" />
+          <Toaster
+            position="bottom-right"
+            reverseOrder={false}
+          />
         </AuthProvider>
       </body>
     </html>

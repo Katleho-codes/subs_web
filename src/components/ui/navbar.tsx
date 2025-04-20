@@ -2,7 +2,7 @@
 
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { useAuth } from "@/hooks/useAuth";
-
+import { usePathname } from 'next/navigation'
 import Link from "next/link";
 
 import {
@@ -17,15 +17,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 export default function Navbar() {
     const { user, logout } = useAuth()
-
+    const pathname = usePathname()
     return (
 
 
         <nav className="hidden lg:flex h-[4rem] border items-center px-2">
             <div className="mx-auto flex gap-3 items-center">
-                <Link href="/subscriptions">Subscriptions</Link>
-                <Link href="/analytics">Analytics</Link>
-                <Link href="/create_sub">Create new</Link>
+                <Link href="/subscriptions" className={` ${pathname === "/subscriptions" ? 'text-[#e85d04] font-semibold' : 'text-gray-800'}`}>Subscriptions</Link>
+                <Link href="/analytics" className={` ${pathname === "/analytics" ? 'text-[#e85d04] font-semibold' : 'text-gray-800'}`}>Analytics</Link>
+                <Link href="/create_sub" className={` ${pathname === "/create_sub" ? 'text-[#e85d04] font-semibold' : 'text-gray-800'}`}>Create new</Link>
             </div>
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>

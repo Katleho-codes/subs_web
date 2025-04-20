@@ -1,7 +1,7 @@
 import { db } from "@/lib/firebase";
 import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 import { useState } from "react";
-import { toast } from "sonner";
+import { toast } from "react-hot-toast";
 import { useAuth } from "./useAuth";
 type TAddSub = {
     sub_name: string;
@@ -35,13 +35,8 @@ const useAddSubscription = () => {
             );
 
             const querySnapshot = await getDocs(q);
-            console.log(
-                "Query Snapshot:",
-                querySnapshot.docs.map((doc) => doc.data())
-            ); // ✅ Log results
-
             if (!querySnapshot.empty) {
-                console.log("Subscription exists, stopping execution."); // ✅ Log condition
+                
                 toast.error("Subscription exists!");
                 setLoading(false);
                 return;
@@ -59,8 +54,7 @@ const useAddSubscription = () => {
             toast.success("Subscription created!");
         } catch (error: unknown) {
             if (error instanceof Error) {
-                console.error("create sub error", error.message);
-                // toast.error("Subscription not created");
+                toast.error("Subscription not created");
             } else {
                 console.error("create sub error", error);
             }

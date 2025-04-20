@@ -1,7 +1,7 @@
 import { db } from "@/lib/firebase";
 import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 import { useState } from "react";
-import { toast } from "sonner";
+import { toast } from "react-hot-toast";
 import { useAuth } from "./useAuth";
 type TAddBudget = {
     month: string;
@@ -25,14 +25,9 @@ const useAddBudget = () => {
                 where("userId", "==", user?.uid)
             );
 
-            const querySnapshot = await getDocs(q);
-            console.log(
-                "Query Snapshot:",
-                querySnapshot.docs.map((doc) => doc.data())
-            ); // ✅ Log results
+            const querySnapshot = await getDocs(q); 
 
             if (!querySnapshot.empty) {
-                console.log("Budget exists, stopping execution."); // ✅ Log condition
                 toast.error("Budget exists!");
                 setLoading(false);
                 return;
@@ -42,17 +37,15 @@ const useAddBudget = () => {
             const filteredValues = Object.fromEntries(
                 Object.entries(values).filter(([, v]) => v !== undefined)
             );
-            const docRef = await addDoc(collection(db, "budget"), {
+            await addDoc(collection(db, "budget"), {
                 ...filteredValues, // Use only valid values
                 userId: user?.uid, // Ensure userId is always set
             });
-            console.log("docRef", docRef);
             // getData();
             toast.success("Budget created!");
         } catch (error: unknown) {
             if (error instanceof Error) {
-                console.error("create budget error", error.message);
-                // toast.error("Subscription not created");
+                toast.error("Subscription not created");
             } else {
                 console.error("create budget error", error);
             }

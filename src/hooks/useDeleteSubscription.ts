@@ -2,7 +2,7 @@ import { db } from "@/lib/firebase";
 import { doc, deleteDoc } from "firebase/firestore";
 import { useState } from "react";
 import { useAuth } from "./useAuth";
-import { toast } from "sonner";
+import { toast } from "react-hot-toast";
 
 const useDeleteSubscription = () => {
     const [deleteSubscriptionLoading, setLoading] = useState(false);
