@@ -2,6 +2,7 @@ import { AuthProvider } from "@/hooks/useAuth";
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import { Toaster } from 'react-hot-toast';
+import { ThemeProvider } from "@/components/theme-provider"
 import "./globals.css";
 const inter = Geist({
   subsets: ["latin"],
@@ -22,10 +23,17 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.className} antialiased`}
+        className={`${inter.className} antialiased `}
       >
         <AuthProvider>
-          {children}
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+          </ThemeProvider>
           <Toaster
             position="bottom-right"
             reverseOrder={false}

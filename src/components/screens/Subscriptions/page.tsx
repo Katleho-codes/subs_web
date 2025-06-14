@@ -328,39 +328,31 @@ const SubscriptionScreen = () => {
                 !user ?
                     <NotLoggedIn /> :
 
-                    <main>
+                    <main className="dark:bg-[#333533] h-screen">
                         <Sidebar />
                         <div className='container max-w-full lg:w-6xl lg:min-w-w-6xl mx-auto p-2'>
                             <div className="flex gap-2">
                                 <div className="flex gap-2">
-                                    <Input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} />
-                                    <Input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)} />
+                                    <Input type="date" className='focus-visible:shadow-none focus-visible:ring-0 focus-visible:outline-none focus-visible:border-[#eee] dark:border-[#333533]' value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} />
+                                    <Input type="date" className='focus-visible:shadow-none focus-visible:ring-0 focus-visible:outline-none focus-visible:border-[#eee] dark:border-[#333533]' value={dateTo} onChange={(e) => setDateTo(e.target.value)} />
                                 </div>
                                 <Select value={sortData} onValueChange={(e) => setSortData(e)}>
-                                    <SelectTrigger className="w-[180px]">
+                                    <SelectTrigger className="w-[180px] cursor-pointer text-gray-800 dark:text-[#f6fff8] focus-visible:shadow-none focus-visible:ring-0 focus-visible:outline-none focus-visible:border-[#eee] dark:border-[#333533]">
                                         <SelectValue placeholder="Sort by" />
                                     </SelectTrigger>
-                                    <SelectContent>
+                                    <SelectContent className="dark:bg-[#333533] dark:text-[#f6fff8]">
                                         <SelectGroup>
-                                            <SelectLabel>Sort</SelectLabel>
-                                            <SelectItem value="new">New</SelectItem>
-                                            <SelectItem value="price_low_to_high">Price: low to high</SelectItem>
-                                            <SelectItem value="price_high_to_low">Price: high to low</SelectItem>
-                                            <SelectItem value="name_a_to_z">Name A-Z</SelectItem>
-                                            <SelectItem value="name_z_to_a">Name Z-A</SelectItem>
+                                            <SelectLabel className='dark:text-[#f6fff8]'>Sort</SelectLabel>
+                                            <SelectItem value="new" className="hover:dark:bg-[#212529] focus:dark:bg-[#212529]">New</SelectItem>
+                                            <SelectItem value="price_low_to_high" className="hover:dark:bg-[#212529] focus:dark:bg-[#212529]">Price: low to high</SelectItem>
+                                            <SelectItem value="price_high_to_low" className="hover:dark:bg-[#212529] focus:dark:bg-[#212529]">Price: high to low</SelectItem>
+                                            <SelectItem value="name_a_to_z" className="hover:dark:bg-[#212529] focus:dark:bg-[#212529]">Name A-Z</SelectItem>
+                                            <SelectItem value="name_z_to_a" className="hover:dark:bg-[#212529] focus:dark:bg-[#212529]">Name Z-A</SelectItem>
                                         </SelectGroup>
                                     </SelectContent>
                                 </Select>
-                                <Button type="button" className='bg-[#dc2f02] hover:bg-[#e85d04] cursor-pointer' onClick={handleResetFilters}>Reset filters</Button>
-                                {/* todo: undo */}
-                                <Button type="button" className='bg-[#dc2f02] hover:bg-[#e85d04] cursor-pointer' onClick={() =>
-                                    toast.success(
-                                        `${`Subscription renewal\n\nSubscription will now renew for the next year`}`,
-                                        {
-                                            duration: 6000,
-                                        }
-                                    )
-                                }>Toast</Button>
+                                <Button type="button" className='bg-[#dc2f02] hover:bg-[#e85d04] cursor-pointer dark:text-[#f6fff8]' onClick={handleResetFilters}>Reset filters</Button>
+
 
                             </div>
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
@@ -408,7 +400,7 @@ const SubscriptionScreen = () => {
                             {/* alert dialog  */}
                             <AlertDialog open={!!deleteSubAlert} onOpenChange={(open) => !open && setDeleteSubAlert(false)}>
                                 {/* <AlertDialogTrigger>Open</AlertDialogTrigger> */}
-                                <AlertDialogContent>
+                                <AlertDialogContent className='dark:bg-[#212529]'>
                                     <AlertDialogHeader>
                                         <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                                         <AlertDialogDescription>
@@ -429,8 +421,8 @@ const SubscriptionScreen = () => {
                                     {/* Empty trigger, Dialog is opened manually by card click */}
                                 </DialogTrigger>
 
-                                <DialogContent>
-                                    <DialogTitle>{isEditing ? "Edit subscription" : "Subscription Details"}</DialogTitle>
+                                <DialogContent className='dark:bg-[#212529]'>
+                                    <DialogTitle className='text-gray-800 dark:text-[#6c757d]'>{isEditing ? "Edit subscription" : "Subscription Details"}</DialogTitle>
                                     {
                                         !isEditing ? (<div>
                                             <p><strong>Name:</strong> {selectedSub?.sub_name}</p>
@@ -465,19 +457,19 @@ const SubscriptionScreen = () => {
                                                 <>
                                                     <form>
                                                         <div className='mb-3'>
-                                                            <Label htmlFor="sub_name" className='mb-2 text-gray-800'>Subscription name</Label>
-                                                            <Input type="text" className='focus-visible:shadow-none focus-visible:ring-0 focus-visible:outline-none focus-visible:border-[#eee]' value={sub_name || ""} onChange={(e) => setSubName(e.target.value)} />
+                                                            <Label htmlFor="sub_name" className='mb-2 text-gray-800 dark:text-[#f6fff8]'>Subscription name</Label>
+                                                            <Input type="text" className='focus-visible:shadow-none focus-visible:ring-0 focus-visible:outline-none focus-visible:border-[#eee] dark:border-[#333533]' value={sub_name || ""} onChange={(e) => setSubName(e.target.value)} />
                                                         </div>
                                                         <div className='mb-3'>
                                                             <Select value={category || ""} onValueChange={(e) => setCategory(e)}>
-                                                                <SelectTrigger className="w-full cursor-pointer text-gray-800 focus-visible:shadow-none focus-visible:ring-0 focus-visible:outline-none focus-visible:border-[#eee]">
+                                                                <SelectTrigger className="w-full cursor-pointer text-gray-800 dark:text-[#f6fff8] focus-visible:shadow-none focus-visible:ring-0 focus-visible:outline-none focus-visible:border-[#eee] dark:border-[#333533]">
                                                                     <SelectValue placeholder="Select a category" />
                                                                 </SelectTrigger>
-                                                                <SelectContent>
+                                                                <SelectContent className="dark:bg-[#333533] dark:text-[#f6fff8]">
                                                                     <SelectGroup>
-                                                                        <SelectLabel>Categories</SelectLabel>
+                                                                        <SelectLabel className='dark:text-[#f6fff8]'>Categories</SelectLabel>
                                                                         {categories?.map((x) => (
-                                                                            <SelectItem key={x?.id} value={x?._name}>{x?._name}</SelectItem>
+                                                                            <SelectItem className="hover:dark:bg-[#212529] focus:dark:bg-[#212529]" key={x?.id} value={x?._name}>{x?._name}</SelectItem>
                                                                         ))}
                                                                     </SelectGroup>
                                                                 </SelectContent>
@@ -488,20 +480,20 @@ const SubscriptionScreen = () => {
                                                         <>
 
                                                             <div className='mb-3'>
-                                                                <Label htmlFor="plan_name" className='mb-2 text-gray-800'>Plan name e.g. Premium</Label>
-                                                                <Input type="text" value={plan_name || ""} className='focus-visible:shadow-none focus-visible:ring-0 focus-visible:outline-none focus-visible:border-[#eee]' onChange={(e) => setPlanName(e.target.value)} />
+                                                                <Label htmlFor="plan_name" className='mb-2 text-gray-800 dark:text-[#f6fff8]'>Plan name e.g. Premium</Label>
+                                                                <Input type="text" value={plan_name || ""} className='focus-visible:shadow-none focus-visible:ring-0 focus-visible:outline-none focus-visible:border-[#eee] dark:border-[#333533]' onChange={(e) => setPlanName(e.target.value)} />
                                                             </div>
                                                             <div className='mb-3'>
-                                                                <Label htmlFor="billing_cycle" className='mb-2 text-gray-800'>Billing cycle</Label>
+                                                                <Label htmlFor="billing_cycle" className='mb-2 text-gray-800 dark:text-[#f6fff8]'>Billing cycle</Label>
                                                                 <Select name="billing_cycle" value={billing_cycle} onValueChange={(e) => setBillingCycle(e)}>
-                                                                    <SelectTrigger className="w-full cursor-pointer text-gray-800 focus-visible:shadow-none focus-visible:ring-0 focus-visible:outline-none focus-visible:border-[#eee]">
+                                                                    <SelectTrigger className="w-full cursor-pointer text-gray-800 dark:text-[#f6fff8] focus-visible:shadow-none focus-visible:ring-0 focus-visible:outline-none focus-visible:border-[#eee] dark:border-[#333533]">
                                                                         <SelectValue placeholder="Select a billing cycle" />
                                                                     </SelectTrigger>
-                                                                    <SelectContent>
+                                                                    <SelectContent className="dark:bg-[#333533] dark:text-[#f6fff8]">
                                                                         <SelectGroup>
-                                                                            <SelectLabel>Billing cycles</SelectLabel>
+                                                                            <SelectLabel className='dark:text-[#f6fff8]'>Billing cycles</SelectLabel>
                                                                             {cycles?.map((x) => (
-                                                                                <SelectItem key={x?.id} value={x?._name}>{x?._name}</SelectItem>
+                                                                                <SelectItem className="hover:dark:bg-[#212529] focus:dark:bg-[#212529]" key={x?.id} value={x?._name}>{x?._name}</SelectItem>
                                                                             ))}
                                                                         </SelectGroup>
                                                                     </SelectContent>
@@ -509,28 +501,28 @@ const SubscriptionScreen = () => {
                                                             </div>
 
                                                             <div className='mb-3'>
-                                                                <Label htmlFor='start_date' className='mb-2 text-gray-800'>Start date</Label>
-                                                                <Input type="date" name="start_date" value={start_date || ""} onChange={(e) => setStartDate(e.target.value)} />
+                                                                <Label htmlFor='start_date' className='mb-2 text-gray-800 dark:text-[#f6fff8]'>Start date</Label>
+                                                                <Input type="date" className='focus-visible:shadow-none focus-visible:ring-0 focus-visible:outline-none focus-visible:border-[#eee] dark:border-[#333533]' name="start_date" value={start_date || ""} onChange={(e) => setStartDate(e.target.value)} />
                                                             </div>
                                                             <div className='mb-3'>
-                                                                <Label htmlFor='next_billing_date' className='mb-2 text-gray-800'>Due date</Label>
-                                                                <Input type="date" name="next_billing_date" value={next_billing_date || ""} onChange={(e) => setNextBillingDate(e.target.value)} />
+                                                                <Label htmlFor='next_billing_date' className='mb-2 text-gray-800 dark:text-[#f6fff8]'>Due date</Label>
+                                                                <Input type="date" className='focus-visible:shadow-none focus-visible:ring-0 focus-visible:outline-none focus-visible:border-[#eee] dark:border-[#333533]' name="next_billing_date" value={next_billing_date || ""} onChange={(e) => setNextBillingDate(e.target.value)} />
                                                             </div>
                                                             <div className='mb-3'>
-                                                                <Label htmlFor="amount" className='mb-2 text-gray-800'>Amount</Label>
-                                                                <Input type="text" className="w-full placeholder:font-regular placeholder:text-gray-400 placeholder:text-sm shadow-none border border-gray-200 focus-visible:ring-1 focus-visible:ring-gray-300 focus-visible:border-none focus-visible:shadow-none focus-visible:outline-none" value={amount || ""} onChange={(e) => setAmount(e.target.value)} />
+                                                                <Label htmlFor="amount" className='mb-2 text-gray-800 dark:text-[#f6fff8]'>Amount</Label>
+                                                                <Input type="text" className='focus-visible:shadow-none focus-visible:ring-0 focus-visible:outline-none focus-visible:border-[#eee] dark:border-[#333533]' value={amount || ""} onChange={(e) => setAmount(e.target.value)} />
                                                             </div>
                                                             <div className='mb-3'>
-                                                                <Label htmlFor="currency" className='mb-2 text-gray-800'>Currency</Label>
+                                                                <Label htmlFor="currency" className='mb-2 text-gray-800 dark:text-[#f6fff8]'>Currency</Label>
                                                                 <Select name="currency" value={currency || ""} onValueChange={(e) => setCurrency(e)}>
-                                                                    <SelectTrigger className="w-full cursor-pointer focus-visible:shadow-none focus-visible:ring-0 focus-visible:outline-none focus-visible:border-[#eee]">
+                                                                    <SelectTrigger className="w-full cursor-pointer text-gray-800 dark:text-[#f6fff8] focus-visible:shadow-none focus-visible:ring-0 focus-visible:outline-none focus-visible:border-[#eee]">
                                                                         <SelectValue placeholder="Select a currency" />
                                                                     </SelectTrigger>
-                                                                    <SelectContent>
+                                                                    <SelectContent className="dark:bg-[#333533] dark:text-[#f6fff8]">
                                                                         <SelectGroup>
-                                                                            <SelectLabel>Currencies</SelectLabel>
+                                                                            <SelectLabel className='dark:text-[#f6fff8]'>Currencies</SelectLabel>
                                                                             {currencies?.map((x) => (
-                                                                                <SelectItem key={x?.symbol} value={x?.code}>{x?.name}</SelectItem>
+                                                                                <SelectItem className="hover:dark:bg-[#212529] focus:dark:bg-[#212529]" key={x?.symbol} value={x?.code}>{x?.name}</SelectItem>
                                                                             ))}
                                                                         </SelectGroup>
                                                                     </SelectContent>

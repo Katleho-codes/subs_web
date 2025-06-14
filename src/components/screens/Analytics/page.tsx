@@ -115,18 +115,20 @@ export default function AnalyticsScreen() {
             {
                 !user ?
                     <NotLoggedIn /> :
-                    <main>
+                    <main className="dark:bg-[#333533] h-screen">
                         <Sidebar />
                         <div className='min-w-80 max-w-5xl container p-2 mx-auto'>
 
                             <div className="flex gap-2">
-                                <Input type="date" className='focus-visible:border-gray-100 focus-visible:outline-none focus-visible:ring-0 border-gray-200' value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} />
-                                <Input type="date" className='focus-visible:border-gray-100 focus-visible:outline-none focus-visible:ring-0 border-gray-200' value={dateTo} onChange={(e) => setDateTo(e.target.value)} />
-                                <Button type="button" className='bg-[#dc2f02] hover:bg-[#e85d04] cursor-pointer' onClick={handleResetFilters}>Reset filters</Button>
+                                <Input type="date" className='focus-visible:shadow-none focus-visible:ring-0 focus-visible:outline-none focus-visible:border-[#eee] dark:border-[#333533]' value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} />
+                                <Input type="date" className='focus-visible:shadow-none focus-visible:ring-0 focus-visible:outline-none focus-visible:border-[#eee] dark:border-[#333533]' value={dateTo} onChange={(e) => setDateTo(e.target.value)} />
+                                {/* <Input type="date" className='focus-visible:border-gray-100 focus-visible:outline-none focus-visible:ring-0 border-gray-200 dark:text-[#f6fff8]' value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} />
+                                <Input type="date" className='focus-visible:border-gray-100 focus-visible:outline-none focus-visible:ring-0 border-gray-200 dark:text-[#f6fff8]' value={dateTo} onChange={(e) => setDateTo(e.target.value)} /> */}
+                                <Button type="button" className='bg-[#dc2f02] hover:bg-[#e85d04] cursor-pointer dark:text-[#f6fff8]' onClick={handleResetFilters}>Reset filters</Button>
 
                                 <Button className='btn' onClick={() => setOpenAddBudgetModal(true)}>Add budget</Button>
                             </div>
-                            <h1 className="text-gray-800 font-medium my-2">Your budget for {moment(datetimestamp).format("MMMM")} {budget?.amount}</h1>
+                            <h1 className="text-gray-800 font-medium my-2 dark:text-[#f6fff8]">Your budget for {moment(datetimestamp).format("MMMM")} {budget?.amount}</h1>
                             {/* <h2>Used so far {totalSubAmount}</h2>
                             <h2>Left {budgetLeft}</h2> */}
 
@@ -136,25 +138,25 @@ export default function AnalyticsScreen() {
                                     {/* Empty trigger, Dialog is opened manually by card click */}
                                 </DialogTrigger>
 
-                                <DialogContent>
-                                    <DialogTitle className='text-gray-800'>{"Create budget"}</DialogTitle>
+                                <DialogContent className='dark:bg-[#212529]'>
+                                    <DialogTitle className='text-gray-800 dark:text-[#6c757d]'>{"Create budget"}</DialogTitle>
 
                                     <>
                                         <form>
                                             <div className='mb-3'>
-                                                <Label htmlFor="sub_name" className='mb-2 text-gray-800'>Type budget here</Label>
-                                                <Input type="number" className='focus-visible:shadow-none focus-visible:ring-0 focus-visible:outline-none focus-visible:border-[#eee]' value={amount || ""} onChange={(e) => setAmount(Number(e.target.value))} />
+                                                <Label htmlFor="sub_name" className='mb-2 text-gray-800 dark:text-[#f6fff8]'>Type budget here</Label>
+                                                <Input type="number" className='focus-visible:shadow-none focus-visible:ring-0 focus-visible:outline-none focus-visible:border-[#eee] dark:border-[#333533]' value={amount || ""} onChange={(e) => setAmount(Number(e.target.value))} />
                                             </div>
                                             <div className='mb-3'>
                                                 <Select value={month || ""} onValueChange={(e) => setMonth(e)}>
-                                                    <SelectTrigger className="w-full cursor-pointer text-gray-800 focus-visible:shadow-none focus-visible:ring-0 focus-visible:outline-none focus-visible:border-[#eee]">
+                                                    <SelectTrigger className="w-full cursor-pointer text-gray-800 dark:text-[#f6fff8] focus-visible:shadow-none focus-visible:ring-0 focus-visible:outline-none focus-visible:border-[#eee] dark:border-[#333533]">
                                                         <SelectValue placeholder="Select a month" />
                                                     </SelectTrigger>
-                                                    <SelectContent>
+                                                    <SelectContent className="dark:bg-[#333533] dark:text-[#f6fff8]">
                                                         <SelectGroup>
-                                                            <SelectLabel>Months</SelectLabel>
+                                                            <SelectLabel className='dark:text-[#f6fff8]'>Months</SelectLabel>
                                                             {months?.map((x) => (
-                                                                <SelectItem key={x?.id} value={x?.name}>{x?.name}</SelectItem>
+                                                                <SelectItem className="hover:dark:bg-[#212529] focus:dark:bg-[#212529]" key={x?.id} value={x?.name}>{x?.name}</SelectItem>
                                                             ))}
                                                         </SelectGroup>
                                                     </SelectContent>
@@ -171,74 +173,74 @@ export default function AnalyticsScreen() {
                                 </DialogContent>
                             </Dialog>
                             <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3'>
-                                <Card>
+                                <Card className='dark:bg-[#333533]'>
                                     <CardHeader>
-                                        <CardTitle className='text-gray-800'>Total Subscriptions</CardTitle>
-                                        <CardDescription className="text-gray-500">{subs?.length || 0}</CardDescription>
+                                        <CardTitle className='text-gray-800 dark:text-[#f6fff8]'>Total Subscriptions</CardTitle>
+                                        <CardDescription className="text-gray-500 dark:text-[#f6fff8]">{subs?.length || 0}</CardDescription>
                                     </CardHeader>
                                 </Card>
 
-                                <Card className="cursor-pointer" onClick={() => {
+                                <Card className="cursor-pointer dark:bg-[#333533]" onClick={() => {
                                     setSelectedFilterType('active');
                                     setOpenSubListModal(true);
                                 }}>
                                     <CardHeader>
-                                        <CardTitle className='text-gray-800'>Active Subscriptions</CardTitle>
-                                        <CardDescription className="text-gray-500">{activeSubs}</CardDescription>
+                                        <CardTitle className='text-gray-800 dark:text-[#f6fff8]'>Active Subscriptions</CardTitle>
+                                        <CardDescription className="text-gray-500 dark:text-[#f6fff8]">{activeSubs}</CardDescription>
                                     </CardHeader>
                                 </Card>
 
-                                <Card className="cursor-pointer" onClick={() => {
+                                <Card className="cursor-pointer dark:bg-[#333533]" onClick={() => {
                                     setSelectedFilterType('unpaid');
                                     setOpenSubListModal(true);
                                 }}>
                                     <CardHeader>
-                                        <CardTitle className='text-gray-800'>Unpaid Subscriptions</CardTitle>
-                                        <CardDescription className="text-gray-500">{unpaidSubs}</CardDescription>
+                                        <CardTitle className='text-gray-800 dark:text-[#f6fff8]'>Unpaid Subscriptions</CardTitle>
+                                        <CardDescription className="text-gray-500 dark:text-[#f6fff8]">{unpaidSubs}</CardDescription>
                                     </CardHeader>
                                 </Card>
 
-                                <Card className="cursor-pointer" onClick={() => {
+                                <Card className="cursor-pointer dark:bg-[#333533]" onClick={() => {
                                     setSelectedFilterType('canceled');
                                     setOpenSubListModal(true);
                                 }}>
                                     <CardHeader>
-                                        <CardTitle className='text-gray-800'>Canceled Subscriptions</CardTitle>
-                                        <CardDescription className="text-gray-500">{canceledSubs}</CardDescription>
+                                        <CardTitle className='text-gray-800 dark:text-[#f6fff8]'>Canceled Subscriptions</CardTitle>
+                                        <CardDescription className="text-gray-500 dark:text-[#f6fff8]">{canceledSubs}</CardDescription>
                                     </CardHeader>
                                 </Card>
 
-                                <Card className="cursor-pointer" onClick={() => {
+                                <Card className="cursor-pointer dark:bg-[#333533]" onClick={() => {
                                     setSelectedFilterType('autoRenew');
                                     setOpenSubListModal(true);
                                 }}>
                                     <CardHeader>
-                                        <CardTitle className='text-gray-800'>Auto Renew Subscriptions</CardTitle>
-                                        <CardDescription className="text-gray-500">{autoRenewSubs}</CardDescription>
+                                        <CardTitle className='text-gray-800 dark:text-[#f6fff8]'>Auto Renew Subscriptions</CardTitle>
+                                        <CardDescription className="text-gray-500 dark:text-[#f6fff8]">{autoRenewSubs}</CardDescription>
                                     </CardHeader>
                                 </Card>
 
                                 {highestCategory && (
-                                    <Card>
+                                    <Card className="dark:bg-[#333533]">
                                         <CardHeader>
-                                            <CardTitle className='text-gray-800'>Top Category</CardTitle>
+                                            <CardTitle className='text-gray-800 dark:text-[#f6fff8]'>Top Category</CardTitle>
                                             <CardDescription className="text-gray-500">{highestCategory[0]} — {highestCategory[1]}</CardDescription>
                                         </CardHeader>
                                     </Card>
                                 )}
 
                                 {lowestCategory && (
-                                    <Card>
+                                    <Card className="dark:bg-[#333533]">
                                         <CardHeader>
-                                            <CardTitle className='text-gray-800'>Lowest Category</CardTitle>
+                                            <CardTitle className='text-gray-800 dark:text-[#f6fff8]'>Lowest Category</CardTitle>
                                             <CardDescription className="text-gray-500">{lowestCategory[0]} — {lowestCategory[1]}</CardDescription>
                                         </CardHeader>
                                     </Card>
                                 )}
                             </div>
                             <Dialog open={openSubListModal} onOpenChange={(open) => !open && setOpenSubListModal(false)}>
-                                <DialogContent className='max-w-2xl'>
-                                    <DialogTitle className='text-gray-800'>
+                                <DialogContent className='max-w-2xl dark:bg-[#212529] border-[#212529]'>
+                                    <DialogTitle className='text-gray-800  dark:text-[#6c757d]'>
                                         {selectedFilterType === 'unpaid' && "Unpaid Subscriptions"}
                                         {selectedFilterType === 'canceled' && "Canceled Subscriptions"}
                                         {selectedFilterType === 'autoRenew' && "Auto Renew Subscriptions"}
@@ -247,10 +249,10 @@ export default function AnalyticsScreen() {
 
                                     <div className='grid gap-3 max-h-[60vh] overflow-auto'>
                                         {getFilteredSubsByType(selectedFilterType || "")?.map((sub, index) => (
-                                            <Card key={index}>
+                                            <Card key={index} className='dark:bg-[#333533] border-[#333533]'>
                                                 <CardHeader>
-                                                    <CardTitle className='text-gray-800'>{sub.sub_name}</CardTitle>
-                                                    <CardDescription className="text-gray-500">Status: {sub.status} | Amount: {sub.amount} | Category: {sub.category}</CardDescription>
+                                                    <CardTitle className='text-gray-800 dark:text-[#f6fff8]'>{sub.sub_name}</CardTitle>
+                                                    <CardDescription className="text-gray-500 dark:text-[#f6fff8]">Status: {sub.status} | Amount: {sub.amount} | Category: {sub.category}</CardDescription>
                                                 </CardHeader>
                                             </Card>
                                         ))}

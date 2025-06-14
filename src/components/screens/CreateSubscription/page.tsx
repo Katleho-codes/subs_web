@@ -60,25 +60,25 @@ export default function CreateSubscriptionScreen() {
             {
                 !user ?
                     <NotLoggedIn /> :
-                    <main>
+                    <main className="dark:bg-[#333533] h-screen">
                         <Sidebar />
                         <div className='container max-w-full lg:w-md lg:min-w-md mx-auto p-2'>
 
                             <form onSubmit={createSub}>
                                 <div className='mb-3'>
-                                    <Label htmlFor="sub_name" className='mb-2 text-gray-800'>Subscription name</Label>
-                                    <Input type="text" className='focus-visible:shadow-none focus-visible:ring-0 focus-visible:outline-none focus-visible:border-[#eee]' value={sub_name} onChange={(e) => setSubName(e.target.value)} />
+                                    <Label htmlFor="sub_name" className='mb-2 text-gray-800 dark:text-[#f6fff8]'>Subscription name</Label>
+                                    <Input type="text" className='focus-visible:shadow-none focus-visible:ring-0 focus-visible:outline-none focus-visible:border-[#eee] dark:border-[#333533]' value={sub_name} onChange={(e) => setSubName(e.target.value)} />
                                 </div>
                                 <div className='mb-3'>
                                     <Select value={category} onValueChange={(e) => setCategory(e)}>
-                                        <SelectTrigger className="w-full cursor-pointer text-gray-800 focus-visible:shadow-none focus-visible:ring-0 focus-visible:outline-none focus-visible:border-[#eee]">
+                                        <SelectTrigger className="w-full cursor-pointer text-gray-800 dark:text-[#f6fff8] focus-visible:shadow-none focus-visible:ring-0 focus-visible:outline-none focus-visible:border-[#eee] dark:border-[#333533]">
                                             <SelectValue placeholder="Select a category" />
                                         </SelectTrigger>
-                                        <SelectContent>
+                                        <SelectContent className="dark:bg-[#333533] dark:text-[#f6fff8]">
                                             <SelectGroup>
-                                                <SelectLabel>Categories</SelectLabel>
+                                                <SelectLabel className='dark:text-[#f6fff8]'>Categories</SelectLabel>
                                                 {categories?.map((x) => (
-                                                    <SelectItem key={x?.id} value={x?._name}>{x?._name}</SelectItem>
+                                                    <SelectItem className="hover:dark:bg-[#212529] focus:dark:bg-[#212529]" key={x?.id} value={x?._name}>{x?._name}</SelectItem>
                                                 ))}
                                             </SelectGroup>
                                         </SelectContent>
@@ -88,7 +88,7 @@ export default function CreateSubscriptionScreen() {
                                     <Checkbox id="is_trial" checked={is_trial} onCheckedChange={toggleTrialCheckbox} className='cursor-pointer' />
                                     <label
                                         htmlFor="is_trial"
-                                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-gray-800"
+                                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-gray-800 dark:text-[#f6fff8]"
                                     >
                                         Trial subscription? (Check for yes, leave blank for no)
                                     </label>
@@ -100,58 +100,58 @@ export default function CreateSubscriptionScreen() {
                                         <>
 
                                             <div className='mb-3'>
-                                                <Label htmlFor='trial_start_date' className='mb-2 text-gray-800'>Trial start date</Label>
-                                                <Input type="date" name="trial_start_date" value={trial_start_date} onChange={(e) => setTrialStartDate(e.target.value)} />
+                                                <Label htmlFor='trial_start_date' className='mb-2 text-gray-800 dark:text-[#f6fff8]'>Trial start date</Label>
+                                                <Input type="date" name="trial_start_date" value={trial_start_date} className='focus-visible:shadow-none focus-visible:ring-0 focus-visible:outline-none focus-visible:border-[#eee] dark:border-[#333533]' onChange={(e) => setTrialStartDate(e.target.value)} />
                                             </div>
                                             <div className='mb-3'>
-                                                <Label htmlFor='trial_end_date' className='mb-2 text-gray-800'>Trial end date</Label>
-                                                <Input type="date" name="trial_end_date" value={trial_end_date} onChange={(e) => setTrialEndDate(e.target.value)} />
+                                                <Label htmlFor='trial_end_date' className='mb-2 text-gray-800 dark:text-[#f6fff8]'>Trial end date</Label>
+                                                <Input type="date" name="trial_end_date" value={trial_end_date} className='focus-visible:shadow-none focus-visible:ring-0 focus-visible:outline-none focus-visible:border-[#eee] dark:border-[#333533]' onChange={(e) => setTrialEndDate(e.target.value)} />
                                             </div>
                                         </>
                                         :
                                         <>
 
                                             <div className='mb-3'>
-                                                <Label htmlFor="plan_name" className='mb-2 text-gray-800'>Plan name e.g. Premium</Label>
-                                                <Input type="text" value={plan_name} className='focus-visible:shadow-none focus-visible:ring-0 focus-visible:outline-none focus-visible:border-[#eee]' onChange={(e) => setPlanName(e.target.value)} />
+                                                <Label htmlFor="plan_name" className='mb-2 text-gray-800 dark:text-[#f6fff8]'>Plan name e.g. Premium</Label>
+                                                <Input type="text" value={plan_name} className='focus-visible:shadow-none focus-visible:ring-0 focus-visible:outline-none focus-visible:border-[#eee] dark:border-[#333533]' onChange={(e) => setPlanName(e.target.value)} />
                                             </div>
                                             <div className='mb-3'>
                                                 <Select value={billing_cycle} onValueChange={(e) => setBillingCycle(e)}>
-                                                    <SelectTrigger className="w-full cursor-pointer text-gray-800 focus-visible:shadow-none focus-visible:ring-0 focus-visible:outline-none focus-visible:border-[#eee]">
+                                                    <SelectTrigger className="w-full cursor-pointer text-gray-800 dark:text-[#f6fff8] focus-visible:shadow-none focus-visible:ring-0 focus-visible:outline-none focus-visible:border-[#eee] dark:border-[#333533]">
                                                         <SelectValue placeholder="Select a billing cycle" />
                                                     </SelectTrigger>
-                                                    <SelectContent>
+                                                    <SelectContent className="dark:bg-[#333533] dark:text-[#f6fff8]">
                                                         <SelectGroup>
-                                                            <SelectLabel>Billing cycles</SelectLabel>
+                                                            <SelectLabel className='dark:text-[#f6fff8]'>Billing cycles</SelectLabel>
                                                             {cycles?.map((x) => (
-                                                                <SelectItem key={x?.id} value={x?._name}>{x?._name}</SelectItem>
+                                                                <SelectItem className="hover:dark:bg-[#212529] focus:dark:bg-[#212529]" key={x?.id} value={x?._name}>{x?._name}</SelectItem>
                                                             ))}
                                                         </SelectGroup>
                                                     </SelectContent>
                                                 </Select>
                                             </div>
                                             <div className='mb-3'>
-                                                <Label htmlFor='start_date' className='mb-2 text-gray-800'>Start date</Label>
-                                                <Input type="date" name="start_date" className='focus-visible:border-gray-100 focus-visible:outline-none focus-visible:ring-0 border-gray-200' value={start_date} onChange={(e) => setStartDate(e.target.value)} />
+                                                <Label htmlFor='start_date' className='mb-2 text-gray-800 dark:text-[#f6fff8]'>Start date</Label>
+                                                <Input type="date" name="start_date" className='focus-visible:shadow-none focus-visible:ring-0 focus-visible:outline-none focus-visible:border-[#eee] dark:border-[#333533]' value={start_date} onChange={(e) => setStartDate(e.target.value)} />
                                             </div>
                                             <div className='mb-3'>
-                                                <Label htmlFor='next_billing_date' className='mb-2 text-gray-800'>Due date</Label>
-                                                <Input type="date" name="next_billing_date" className='focus-visible:border-gray-100 focus-visible:outline-none focus-visible:ring-0 border-gray-200' value={next_billing_date} onChange={(e) => setNextBillingDate(e.target.value)} />
+                                                <Label htmlFor='next_billing_date' className='mb-2 text-gray-800 dark:text-[#f6fff8]'>Due date</Label>
+                                                <Input type="date" name="next_billing_date" className='focus-visible:shadow-none focus-visible:ring-0 focus-visible:outline-none focus-visible:border-[#eee] dark:border-[#333533]' value={next_billing_date} onChange={(e) => setNextBillingDate(e.target.value)} />
                                             </div>
                                             <div className='mb-3'>
-                                                <Label htmlFor="amount" className='mb-2 text-gray-800'>Amount</Label>
-                                                <Input type="text" value={amount} className='focus-visible:shadow-none focus-visible:ring-0 focus-visible:outline-none focus-visible:border-[#eee]' onChange={(e) => setAmount(e.target.value)} />
+                                                <Label htmlFor="amount" className='mb-2 text-gray-800 dark:text-[#f6fff8]'>Amount</Label>
+                                                <Input type="text" value={amount} className='focus-visible:shadow-none focus-visible:ring-0 focus-visible:outline-none focus-visible:border-[#eee] dark:border-[#333533]' onChange={(e) => setAmount(e.target.value)} />
                                             </div>
                                             <div className='mb-3'>
                                                 <Select value={currency} onValueChange={(e) => setCurrency(e)}>
-                                                    <SelectTrigger className="w-full cursor-pointer focus-visible:shadow-none focus-visible:ring-0 focus-visible:outline-none focus-visible:border-[#eee]">
+                                                    <SelectTrigger className="w-full cursor-pointer text-gray-800 dark:text-[#f6fff8] focus-visible:shadow-none focus-visible:ring-0 focus-visible:outline-none focus-visible:border-[#eee] dark:border-[#333533]">
                                                         <SelectValue placeholder="Select a currency" />
                                                     </SelectTrigger>
-                                                    <SelectContent>
+                                                    <SelectContent className="dark:bg-[#333533] dark:text-[#f6fff8]">
                                                         <SelectGroup>
-                                                            <SelectLabel>Currencies</SelectLabel>
+                                                            <SelectLabel className='dark:text-[#f6fff8]'>Currencies</SelectLabel>
                                                             {currencies?.map((x) => (
-                                                                <SelectItem key={x?.symbol} value={x?.code}>{x?.name}</SelectItem>
+                                                                <SelectItem className="hover:dark:bg-[#212529] focus:dark:bg-[#212529]" key={x?.symbol} value={x?.code}>{x?.name}</SelectItem>
                                                             ))}
                                                         </SelectGroup>
                                                     </SelectContent>
@@ -161,7 +161,7 @@ export default function CreateSubscriptionScreen() {
                                                 <Checkbox id="terms" checked={auto_renew} onCheckedChange={toggleCheckbox} className='cursor-pointer' />
                                                 <label
                                                     htmlFor="terms"
-                                                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-gray-800"
+                                                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-gray-800 dark:text-[#f6fff8]"
                                                 >
                                                     Auto renew?
                                                 </label>
