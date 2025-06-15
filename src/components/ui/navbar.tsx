@@ -26,7 +26,7 @@ export default function Navbar() {
     return (
 
 
-        <nav className="hidden lg:flex h-[4rem] border items-center px-2 lg:px-3 dark:bg-[#212529] ">
+        <nav className="hidden lg:flex h-[4rem] border items-center px-2 lg:px-3 dark:bg-[#212529]">
             <div className="mx-auto flex gap-3 items-center">
                 <Link href="/subscriptions" className={` ${pathname === "/subscriptions" ? 'text-[#e85d04] font-semibold' : 'text-gray-800 dark:text-[#f6fff8]'}`}>Subscriptions</Link>
                 <Link href="/analytics" className={` ${pathname === "/analytics" ? 'text-[#e85d04] font-semibold' : 'text-gray-800 dark:text-[#f6fff8]'}`}>Analytics</Link>

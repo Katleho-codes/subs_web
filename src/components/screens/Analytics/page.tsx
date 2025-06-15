@@ -119,9 +119,11 @@ export default function AnalyticsScreen() {
                         <Sidebar />
                         <div className='min-w-80 max-w-5xl container p-2 mx-auto'>
 
-                            <div className="flex gap-2">
-                                <Input type="date" className='focus-visible:shadow-none focus-visible:ring-0 focus-visible:outline-none focus-visible:border-[#eee] dark:border-[#333533]' value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} />
-                                <Input type="date" className='focus-visible:shadow-none focus-visible:ring-0 focus-visible:outline-none focus-visible:border-[#eee] dark:border-[#333533]' value={dateTo} onChange={(e) => setDateTo(e.target.value)} />
+                            <div className="flex lg:flex-row flex-col my-3 gap-2">
+                                <div className="flex gap-2">
+                                    <Input type="date" className='focus-visible:shadow-none focus-visible:ring-0 focus-visible:outline-none focus-visible:border-[#eee] dark:border-[#333533]' value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} />
+                                    <Input type="date" className='focus-visible:shadow-none focus-visible:ring-0 focus-visible:outline-none focus-visible:border-[#eee] dark:border-[#333533]' value={dateTo} onChange={(e) => setDateTo(e.target.value)} />
+                                </div>
                                 {/* <Input type="date" className='focus-visible:border-gray-100 focus-visible:outline-none focus-visible:ring-0 border-gray-200 dark:text-[#f6fff8]' value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} />
                                 <Input type="date" className='focus-visible:border-gray-100 focus-visible:outline-none focus-visible:ring-0 border-gray-200 dark:text-[#f6fff8]' value={dateTo} onChange={(e) => setDateTo(e.target.value)} /> */}
                                 <Button type="button" className='bg-[#dc2f02] hover:bg-[#e85d04] cursor-pointer dark:text-[#f6fff8]' onClick={handleResetFilters}>Reset filters</Button>

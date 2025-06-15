@@ -331,13 +331,13 @@ const SubscriptionScreen = () => {
                     <main className="dark:bg-[#333533] h-screen">
                         <Sidebar />
                         <div className='container max-w-full lg:w-6xl lg:min-w-w-6xl mx-auto p-2'>
-                            <div className="flex gap-2">
+                            <div className="flex gap-2 lg:flex-row flex-col my-3">
                                 <div className="flex gap-2">
                                     <Input type="date" className='focus-visible:shadow-none focus-visible:ring-0 focus-visible:outline-none focus-visible:border-[#eee] dark:border-[#333533]' value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} />
                                     <Input type="date" className='focus-visible:shadow-none focus-visible:ring-0 focus-visible:outline-none focus-visible:border-[#eee] dark:border-[#333533]' value={dateTo} onChange={(e) => setDateTo(e.target.value)} />
                                 </div>
                                 <Select value={sortData} onValueChange={(e) => setSortData(e)}>
-                                    <SelectTrigger className="w-[180px] cursor-pointer text-gray-800 dark:text-[#f6fff8] focus-visible:shadow-none focus-visible:ring-0 focus-visible:outline-none focus-visible:border-[#eee] dark:border-[#333533]">
+                                    <SelectTrigger className="lg:w-[180px] w-full cursor-pointer text-gray-800 dark:text-[#f6fff8] focus-visible:shadow-none focus-visible:ring-0 focus-visible:outline-none focus-visible:border-[#eee] dark:border-[#333533]">
                                         <SelectValue placeholder="Sort by" />
                                     </SelectTrigger>
                                     <SelectContent className="dark:bg-[#333533] dark:text-[#f6fff8]">
